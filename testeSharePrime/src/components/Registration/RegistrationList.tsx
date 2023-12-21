@@ -1,16 +1,31 @@
 import * as React from 'react';
 import { Announced } from '@fluentui/react/lib/Announced';
 import { DetailsList, DetailsListLayoutMode, Selection, SelectionMode, IColumn, CheckboxVisibility } from '@fluentui/react/lib/DetailsList';
-import {IconButton } from '@fluentui/react'
+// import {IconButton } from '@fluentui/react'
 import { MarqueeSelection } from '@fluentui/react/lib/MarqueeSelection';
 import { mergeStyleSets } from '@fluentui/react/lib/Styling';
 import { carouselData } from '../../services/carouselData';
+import { RegistrationForm } from './RegistrationForm';
+import { ConfirmationDialog } from '../Dialog/ConfirmationDialog';
+import { EditForm } from './EditForm';
 
 const classNames = mergeStyleSets({
+  container:{
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  headerForm:{
+    display: 'flex',
+    color: 'black',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: '10px',
+  },
     controlWrapper: {
     display: 'flex',
     flexWrap: 'wrap',
   },
+
 });
 
 export interface IDetailsListDocumentsExampleState {
@@ -102,14 +117,18 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
         minWidth: 16,
         maxWidth: 16,
         isRowHeader: true,
-        onRender: (item: ICarouselItem) => (
-          <IconButton
+        onRender: (
+          // item: ICarouselItem
+          ) => (
+          <>
+          {/* <IconButton
             iconProps={{ iconName: 'Delete' }}
             title="Delete"
             ariaLabel="Delete"
             onClick={() => this._onDeleteIconClick(item)}
-            style={{color:'#ffb500'}}
-          />
+            style={{ color: '#ffb500' }} /> */}
+            <ConfirmationDialog />
+            </>
         ),
       },
 
@@ -120,14 +139,18 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
         minWidth: 16,
         maxWidth: 16,
         isRowHeader: true,
-        onRender: (item: ICarouselItem) => (
-          <IconButton
+        onRender: (
+          // item: ICarouselItem
+          ) => (
+          <>
+          {/* <IconButton
             iconProps={{ iconName: 'Edit' }}
             title="Edit"
             ariaLabel="Edit"
             onClick={() => this._onEditIconClick(item)}
-            style={{color:'#ffb500'}}
-          />
+            style={{ color: '#ffb500' }} /> */}
+            <EditForm/>
+            </>
         ),
       },
     ];
@@ -162,6 +185,12 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
     const { columns,isCompactMode, items, selectionDetails } = this.state;
 
     return (
+      <div className={classNames.container}>
+        <div className={classNames.headerForm}>
+        <div><span>Cadastro de imagens</span></div>
+        <div><RegistrationForm/></div>
+      </div>
+      
       <div style={{ maxWidth: '100%', overflowX: 'auto', padding: '20px', margin: '10px', background: 'white' }}>
       <div className={classNames.controlWrapper}>
         <Announced message={`Number of items: ${items.length}.`} />
@@ -185,6 +214,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
             // }}
           />
         </MarqueeSelection>
+      </div>
       </div>
       </div>
     );
@@ -229,17 +259,17 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
     });
   };
 
-    // Função de manipulação do clique no ícone de lixeira
-    private _onDeleteIconClick = (item: ICarouselItem): void => {
-      // Lógica para lidar com a exclusão do item aqui
-      console.log(`Delete clicked for item with ID ${item.id}`);
-    };
+    // // Função de manipulação do clique no ícone de lixeira
+    // private _onDeleteIconClick = (item: ICarouselItem): void => {
+    //   // Lógica para lidar com a exclusão do item aqui
+    //   console.log(`Delete clicked for item with ID ${item.id}`);
+    // };
   
     // Função de manipulação do clique no ícone de edição
-    private _onEditIconClick = (item: ICarouselItem): void => {
-      // Lógica para lidar com a edição do item aqui
-      console.log(`Edit clicked for item with ID ${item.id}`);
-    };
+    // private _onEditIconClick = (item: ICarouselItem): void => {
+    //   // Lógica para lidar com a edição do item aqui
+    //   console.log(`Edit clicked for item with ID ${item.id}`);
+    // };
 
   
 }

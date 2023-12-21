@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DefaultButton } from '@fluentui/react/lib/Button';
+import { DefaultButton, IconButton } from '@fluentui/react/lib/Button';
 import { Panel } from '@fluentui/react/lib/Panel';
 import { useBoolean } from '@fluentui/react-hooks';
 import { SuccessMessage } from '../Dialog/SuccessMessage';
@@ -7,7 +7,7 @@ import { SuccessMessage } from '../Dialog/SuccessMessage';
 // const buttonStyles = { root: { marginRight: 8 } };
 
 
-export const RegistrationForm: React.FunctionComponent = () => {
+export const EditForm: React.FunctionComponent = () => {
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
 
   function onCloseDialog(): void {
@@ -29,7 +29,13 @@ export const RegistrationForm: React.FunctionComponent = () => {
 
   return (
     <div>
-      <DefaultButton text="Open panel" onClick={openPanel} />
+        <IconButton
+            iconProps={{ iconName: 'Edit' }}
+            title="Edit"
+            ariaLabel="Edit"
+            onClick={openPanel}
+            style={{ color: '#ffb500' }} />
+      {/* <DefaultButton text="Open panel" onClick={openPanel} /> */}
       <Panel
         isOpen={isOpen}
         onDismiss={dismissPanel}
