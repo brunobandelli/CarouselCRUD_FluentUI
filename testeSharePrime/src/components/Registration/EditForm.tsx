@@ -2,7 +2,7 @@ import * as React from 'react';
 import { DefaultButton, IconButton } from '@fluentui/react/lib/Button';
 import { Panel } from '@fluentui/react/lib/Panel';
 import { useBoolean } from '@fluentui/react-hooks';
-import { SuccessMessage } from '../Dialog/SuccessMessage';
+import { SuccessDeleteMessage } from '../Dialog/SuccessDeleteMessage';
 
 // const buttonStyles = { root: { marginRight: 8 } };
 
@@ -20,7 +20,7 @@ export const EditForm: React.FunctionComponent = () => {
   const onRenderFooterContent = React.useCallback(
     () => (
       <div>
-        <SuccessMessage onCloseDialog={onCloseDialog} />
+        <SuccessDeleteMessage onCloseDialog={onCloseDialog} />
         <DefaultButton onClick={dismissPanel}>Cancel</DefaultButton>
       </div>
     ),

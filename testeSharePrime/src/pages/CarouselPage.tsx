@@ -4,7 +4,7 @@ import Carousel from '../components/Carousel/Carousel';
 
 const CarouselPage: React.FC = () => {
   return (
-    <div style={{ maxWidth: '1280px', margin: '90px', padding: '2rem', textAlign: 'center'}}>
+    <div style={{ margin: '90px', padding: '2rem'}}>
       <Carousel />
     </div>
   );

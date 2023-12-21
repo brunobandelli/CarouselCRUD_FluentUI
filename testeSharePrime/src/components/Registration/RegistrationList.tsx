@@ -13,6 +13,7 @@ const classNames = mergeStyleSets({
   container:{
     display: 'flex',
     flexDirection: 'column'
+    
   },
   headerForm:{
     display: 'flex',
@@ -31,7 +32,7 @@ const classNames = mergeStyleSets({
 export interface IDetailsListDocumentsExampleState {
   columns: IColumn[];
   items: ICarouselItem[];
-  selectionDetails: string;
+  // selectionDetails: string;
   isCompactMode: boolean;
 }
 
@@ -158,7 +159,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
     this._selection = new Selection({
       onSelectionChanged: () => {
         this.setState({
-          selectionDetails: this._getSelectionDetails(),
+          // selectionDetails: this._getSelectionDetails(),
         });
       },
       getKey: this._getKey,
@@ -177,24 +178,24 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       items,
       columns,
       isCompactMode: true,
-      selectionDetails: this._getSelectionDetails(),
+      // selectionDetails: this._getSelectionDetails(),
     };
   }
 
   public render() {
-    const { columns,isCompactMode, items, selectionDetails } = this.state;
+    const { columns,isCompactMode, items } = this.state;
 
     return (
       <div className={classNames.container}>
         <div className={classNames.headerForm}>
-        <div><span>Cadastro de imagens</span></div>
+        <div><span style={{fontWeight:'700'}}>Cadastro de imagens</span></div>
         <div><RegistrationForm/></div>
       </div>
       
       <div style={{ maxWidth: '100%', overflowX: 'auto', padding: '20px', margin: '10px', background: 'white' }}>
       <div className={classNames.controlWrapper}>
         <Announced message={`Number of items: ${items.length}.`} />
-        <div>{selectionDetails}</div>
+        {/* <div>{selectionDetails}</div> */}
         <MarqueeSelection selection={this._selection}>
           <DetailsList
             items={items}
@@ -224,18 +225,18 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
     return item.key;
   }
 
-  private _getSelectionDetails(): string {
-    const selectionCount = this._selection.getSelectedCount();
+  // private _getSelectionDetails(): string {
+  //   const selectionCount = this._selection.getSelectedCount();
 
-    switch (selectionCount) {
-      case 0:
-        return 'No items selected';
-      case 1:
-        return '1 item selected: ' + (this._selection.getSelection()[0] as ICarouselItem).title;
-      default:
-        return `${selectionCount} items selected`;
-    }
-  }
+  //   switch (selectionCount) {
+  //     case 0:
+  //       return 'No items selected';
+  //     case 1:
+  //       return '1 item selected: ' + (this._selection.getSelection()[0] as ICarouselItem).title;
+  //     default:
+  //       return `${selectionCount} items selected`;
+  //   }
+  // }
 
   private _onColumnClick = (_ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
     const { columns, items } = this.state;

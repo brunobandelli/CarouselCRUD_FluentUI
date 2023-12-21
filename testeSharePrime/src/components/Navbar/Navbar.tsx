@@ -22,7 +22,7 @@ const Navbar: React.FC = () => {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <img src={logo} alt="Logo" style={{ height: '30px', marginRight: '20px' }} />
+        <img src={logo} alt="Logo" style={{ height: '30px', padding: '15px' }} />
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '50px', flex: 1, justifyContent: 'center' }}>
         <NavLink to="/" active={location.pathname === '/'}>

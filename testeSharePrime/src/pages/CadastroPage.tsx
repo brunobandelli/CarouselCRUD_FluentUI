@@ -4,7 +4,7 @@ import { RegistrationList } from '../components/Registration/RegistrationList';
 
 const CadastroPage: React.FC = () => {
   return (
-    <div style={{ maxWidth: '1280px', padding: '2rem', textAlign: 'center'}}>
+    <div style={{ padding: '7rem' }}>
     <RegistrationList/>
     </div>
   );

@@ -3,15 +3,15 @@ import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog';
 import { DefaultButton, IconButton } from '@fluentui/react/lib/Button';
 import { hiddenContentStyle, mergeStyles } from '@fluentui/react/lib/Styling';
 import { useId, useBoolean } from '@fluentui/react-hooks';
-import { SuccessMessage } from './SuccessMessage';
+import { SuccessDeleteMessage } from './SuccessDeleteMessage';
 
 const dialogStyles = { main: { maxWidth: 450 } };
 const screenReaderOnly = mergeStyles(hiddenContentStyle);
 const dialogContentProps = {
   type: DialogType.normal,
-  title: 'Missing Subject',
+  title: 'Excluir imagem?',
   closeButtonAriaLabel: 'Close',
-  subText: 'Do you want to send this message without a subject?',
+  subText: 'Esta ação não poderá ser desfeita',
 };
 
 export const ConfirmationDialog: React.FunctionComponent = () => {
@@ -61,13 +61,13 @@ export const ConfirmationDialog: React.FunctionComponent = () => {
         modalProps={modalProps}
       >
         <DialogFooter>
-          <SuccessMessage onCloseDialog={onCloseDialog} />
-          <DefaultButton onClick={toggleHideDialog} text="Don't send" />
+          <DefaultButton onClick={toggleHideDialog} text="Cancelar" />
+          <SuccessDeleteMessage onCloseDialog={onCloseDialog} />
         </DialogFooter>
       </Dialog>
 
       {/* Renderizar SuccessMessage se showSuccessMessage for verdadeiro */}
-      {showSuccessMessage && <SuccessMessage onCloseDialog={() => setShowSuccessMessage(false)} />}
+      {showSuccessMessage && <SuccessDeleteMessage onCloseDialog={() => setShowSuccessMessage(false)} />}
     </>
   );
 };
