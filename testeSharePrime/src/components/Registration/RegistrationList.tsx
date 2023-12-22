@@ -35,7 +35,7 @@ interface IDetailsListDocumentsExampleState {
 }
 
 interface ICarouselItem {
-  order: any;
+  order: number;
   key: string;
   id: number;
   title: string;
@@ -48,8 +48,8 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
   private _selection: Selection;
 
   private _copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
-    const key = columnKey as keyof T;
-    return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1));
+    const order = columnKey as keyof T;
+    return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[order] < b[order] : a[order] > b[order]) ? 1 : -1));
   }
 
   private _onColumnClick = (_ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
