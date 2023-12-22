@@ -1,4 +1,3 @@
-// src/components/Carousel/CarouselItem.tsx
 import React from 'react';
 
 interface CarouselItemProps {
@@ -18,11 +17,10 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
   order,
   isActive,
 }) => {
-
   const handleLinkClick = () => {
     window.open(link, '_blank');
   };
-  
+
   return (
     <div
       style={{
@@ -33,21 +31,22 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
         width: '100%',
         height: '100%',
         alignItems: 'center',
-        margin: 'auto', 
+        margin: 'auto',
         cursor: 'pointer',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
       }}
       onClick={handleLinkClick}
     >
-      <div style={{ flex: '40%', padding: '20px', textAlign: 'start', fontSize: '16px', color:'black' }}>
+      <div style={{ flex: '40%', padding: '20px', textAlign: 'start', fontSize: '16px', color: 'black' }}>
         <h2>{title}</h2>
         <p style={{ fontSize: '12px', color: 'gray' }}>{description}</p>
       </div>
       <div style={{ flex: '60%', overflow: 'hidden' }}>
+        {/* Adicione uma chave única ao componente img */}
         <img
           src={image}
           alt={title}
-          key={order}
+          key={`${order}-${isActive}`}  
           style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>

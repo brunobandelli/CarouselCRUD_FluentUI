@@ -4,39 +4,38 @@ import { DetailsList, DetailsListLayoutMode, Selection, SelectionMode, IColumn, 
 // import {IconButton } from '@fluentui/react'
 import { MarqueeSelection } from '@fluentui/react/lib/MarqueeSelection';
 import { mergeStyleSets } from '@fluentui/react/lib/Styling';
-import { carouselData } from '../../services/carouselData';
+// import { carouselData } from '../../services/carouselData';
 import { RegistrationForm } from './RegistrationForm';
 import { ConfirmationDialog } from '../Dialog/ConfirmationDialog';
 import { EditForm } from './EditForm';
+import axios from 'axios';
 
 const classNames = mergeStyleSets({
-  container:{
+  container: {
     display: 'flex',
     flexDirection: 'column'
-    
   },
-  headerForm:{
+  headerForm: {
     display: 'flex',
     color: 'black',
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: '10px',
   },
-    controlWrapper: {
+  controlWrapper: {
     display: 'flex',
     flexWrap: 'wrap',
   },
-
 });
 
-export interface IDetailsListDocumentsExampleState {
+interface IDetailsListDocumentsExampleState {
   columns: IColumn[];
   items: ICarouselItem[];
-  // selectionDetails: string;
   isCompactMode: boolean;
 }
 
-export interface ICarouselItem {
+interface ICarouselItem {
+  order: any;
   key: string;
   id: number;
   title: string;
@@ -48,6 +47,39 @@ export interface ICarouselItem {
 export class RegistrationList extends React.Component<{}, IDetailsListDocumentsExampleState> {
   private _selection: Selection;
 
+  private _copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
+    const key = columnKey as keyof T;
+    return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1));
+  }
+
+  private _onColumnClick = (_ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
+    const { columns, items } = this.state;
+    const newColumns: IColumn[] = columns.slice();
+    const currColumn: IColumn = newColumns.filter(currCol => column.key === currCol.key)[0];
+    newColumns.forEach((newCol: IColumn) => {
+      if (newCol === currColumn) {
+        currColumn.isSortedDescending = !currColumn.isSortedDescending;
+        currColumn.isSorted = true;
+        this.setState({
+          columns: newColumns,
+        });
+      } else {
+        newCol.isSorted = false;
+        newCol.isSortedDescending = true;
+      }
+    });
+    const newItems = this._copyAndSort(items, currColumn.fieldName!, currColumn.isSortedDescending);
+    this.setState({
+      items: newItems,
+    });
+  };
+
+  private updateListAfterDeletion = (deletedItemId: number): void => {
+    const updatedItems = this.state.items.filter(item => item.id !== deletedItemId);
+    this.setState({ items: updatedItems });
+  };
+  
+
   constructor(props: {}) {
     super(props);
 
@@ -55,7 +87,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       {
         key: 'column1',
         name: 'ID',
-        fieldName: 'id',
+        fieldName: 'order',
         minWidth: 10,
         maxWidth: 30,
         isResizable: true,
@@ -92,7 +124,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       {
         key: 'column4',
         name: 'URL Arquivo',
-        fieldName: 'urlArquivo',
+        fieldName: 'image',
         minWidth: 195,
         maxWidth: 300,
         isRowHeader: true,
@@ -103,7 +135,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       {
         key: 'column5',
         name: 'URL Direcionamento',
-        fieldName: 'urlDirecionamento',
+        fieldName: 'link',
         minWidth: 195,
         maxWidth: 300,
         isRowHeader: true,
@@ -119,7 +151,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
         maxWidth: 16,
         isRowHeader: true,
         onRender: (
-          // item: ICarouselItem
+          item: ICarouselItem
           ) => (
           <>
           {/* <IconButton
@@ -128,7 +160,8 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
             ariaLabel="Delete"
             onClick={() => this._onDeleteIconClick(item)}
             style={{ color: '#ffb500' }} /> */}
-            <ConfirmationDialog />
+            {/* <ConfirmationDialog idItem={item.id}/> */}
+            <ConfirmationDialog idItem={item.id} updateListAfterDeletion={this.updateListAfterDeletion} />
             </>
         ),
       },
@@ -158,65 +191,56 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
 
     this._selection = new Selection({
       onSelectionChanged: () => {
-        this.setState({
-          // selectionDetails: this._getSelectionDetails(),
-        });
+        this.setState({});
       },
       getKey: this._getKey,
     });
 
-    const items = carouselData.map((data, index) => ({
-      key: index.toString(),
-      id: data.order,
-      title: data.title,
-      description: data.description,
-      urlArquivo: data.image,
-      urlDirecionamento: data.link,
-    }));
-
     this.state = {
-      items,
+      items: [],
       columns,
       isCompactMode: true,
-      // selectionDetails: this._getSelectionDetails(),
     };
   }
 
+  componentDidMount() {
+    // Fetch data from the API when the component mounts
+    axios.get<ICarouselItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
+      .then(response => this.setState({ items: response.data }))
+      .catch(error => console.error('Error fetching carousel data:', error));
+  }
+
   public render() {
-    const { columns,isCompactMode, items } = this.state;
+    const { columns, isCompactMode, items } = this.state;
 
     return (
       <div className={classNames.container}>
         <div className={classNames.headerForm}>
-        <div><span style={{fontWeight:'700'}}>Cadastro de imagens</span></div>
-        <div><RegistrationForm/></div>
-      </div>
-      
-      <div style={{ maxWidth: '100%', overflowX: 'auto', padding: '20px', margin: '10px', background: 'white' }}>
-      <div className={classNames.controlWrapper}>
-        <Announced message={`Number of items: ${items.length}.`} />
-        {/* <div>{selectionDetails}</div> */}
-        <MarqueeSelection selection={this._selection}>
-          <DetailsList
-            items={items}
-            columns={columns}
-            compact={isCompactMode}
-            selectionMode={SelectionMode.multiple}
-            setKey="multiple"
-            layoutMode={DetailsListLayoutMode.justified}
-            isHeaderVisible={true}
-            selection={this._selection}
-            selectionPreservedOnEmptyClick={true}
-            ariaLabelForSelectionColumn="Toggle selection"
-            ariaLabelForSelectAllCheckbox="Toggle selection for all items"
-            checkboxVisibility={CheckboxVisibility.hidden}
-            // styles={{
-            //   root: { padding: '20px', margin: '10px' }, // Adjust padding and margin as needed
-            // }}
-          />
-        </MarqueeSelection>
-      </div>
-      </div>
+          <div><span style={{ fontWeight: '700' }}>Cadastro de imagens</span></div>
+          <div><RegistrationForm /></div>
+        </div>
+
+        <div style={{ maxWidth: '100%', overflowX: 'auto', padding: '20px', margin: '10px', background: 'white' }}>
+          <div className={classNames.controlWrapper}>
+            <Announced message={`Number of items: ${items.length}.`} />
+            <MarqueeSelection selection={this._selection}>
+              <DetailsList
+                items={items}
+                columns={columns}
+                compact={isCompactMode}
+                selectionMode={SelectionMode.multiple}
+                setKey="multiple"
+                layoutMode={DetailsListLayoutMode.justified}
+                isHeaderVisible={true}
+                selection={this._selection}
+                selectionPreservedOnEmptyClick={true}
+                ariaLabelForSelectionColumn="Toggle selection"
+                ariaLabelForSelectAllCheckbox="Toggle selection for all items"
+                checkboxVisibility={CheckboxVisibility.hidden}
+              />
+            </MarqueeSelection>
+          </div>
+        </div>
       </div>
     );
   }
@@ -224,62 +248,4 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
   private _getKey(item: any, _index?: number): string {
     return item.key;
   }
-
-  // private _getSelectionDetails(): string {
-  //   const selectionCount = this._selection.getSelectedCount();
-
-  //   switch (selectionCount) {
-  //     case 0:
-  //       return 'No items selected';
-  //     case 1:
-  //       return '1 item selected: ' + (this._selection.getSelection()[0] as ICarouselItem).title;
-  //     default:
-  //       return `${selectionCount} items selected`;
-  //   }
-  // }
-
-  private _onColumnClick = (_ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
-    const { columns, items } = this.state;
-    const newColumns: IColumn[] = columns.slice();
-    const currColumn: IColumn = newColumns.filter(currCol => column.key === currCol.key)[0];
-    newColumns.forEach((newCol: IColumn) => {
-      if (newCol === currColumn) {
-        currColumn.isSortedDescending = !currColumn.isSortedDescending;
-        currColumn.isSorted = true;
-        this.setState({
-          columns: newColumns,
-        });
-      } else {
-        newCol.isSorted = false;
-        newCol.isSortedDescending = true;
-      }
-    });
-    const newItems = _copyAndSort(items, currColumn.fieldName!, currColumn.isSortedDescending);
-    this.setState({
-      items: newItems,
-    });
-  };
-
-    // // Função de manipulação do clique no ícone de lixeira
-    // private _onDeleteIconClick = (item: ICarouselItem): void => {
-    //   // Lógica para lidar com a exclusão do item aqui
-    //   console.log(`Delete clicked for item with ID ${item.id}`);
-    // };
-  
-    // Função de manipulação do clique no ícone de edição
-    // private _onEditIconClick = (item: ICarouselItem): void => {
-    //   // Lógica para lidar com a edição do item aqui
-    //   console.log(`Edit clicked for item with ID ${item.id}`);
-    // };
-
-  
 }
-
-
-
-function _copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
-  const key = columnKey as keyof T;
-  return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1));
-}
-
-

@@ -1,18 +1,35 @@
 // src/components/Carousel.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { CarouselItem } from './CarouselItem';
-import { carouselData } from '../../services/carouselData';
 import { IconButton } from '@fluentui/react/lib/Button';
 import { initializeIcons } from '@fluentui/react/lib/Icons';
 import { Stack } from '@fluentui/react/lib/Stack';
-// import { Image } from '@fluentui/react/lib/Image';
 import next from '../../assets/next.png';
 import previous from '../../assets/previous.png';
 
 initializeIcons();
 
+interface CarouselDataItem {
+  title: string;
+  description: string;
+  image: string;
+  link: string;
+  key: string;
+  order: number; // Adicione a propriedade order ao tipo
+  // Adicione outras propriedades conforme necessário
+}
+
 const Carousel: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [carouselData, setCarouselData] = useState<CarouselDataItem[]>([]);
+
+  useEffect(() => {
+    // Fetch data from the API when the component mounts
+    axios.get<CarouselDataItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
+      .then(response => setCarouselData(response.data))
+      .catch(error => console.error('Error fetching carousel data:', error));
+  }, []); // Empty dependency array ensures this effect runs once on mount
 
   const nextSlide = () => {
     setCurrentSlide((prevSlide) => (prevSlide + 1) % carouselData.length);
@@ -29,8 +46,8 @@ const Carousel: React.FC = () => {
 
   return (
     <div>
-      <Stack horizontal  horizontalAlign="center" verticalAlign="center" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '45px' }} >
-        <IconButton 
+      <Stack horizontal horizontalAlign="center" verticalAlign="center" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '45px' }}>
+        <IconButton
           iconProps={{
             iconName: '',
             imageProps: {
@@ -48,9 +65,16 @@ const Carousel: React.FC = () => {
           onClick={prevSlide}
         />
         <div style={{ maxWidth: '1000px', maxHeight: '450px', overflow: 'hidden' }}>
-          {sortedCarouselData.map((item, index) => (
-            <CarouselItem key={index} {...item} isActive={index === currentSlide} />
-          ))}
+        {sortedCarouselData.map((item, index) => (
+  <CarouselItem
+            title={item.title || ''}
+            description={item.description || ''}
+            image={item.image || ''}
+            link={item.link || ''}
+            key={item.key} // Use a chave única do objeto CarouselDataItem
+            isActive={index === currentSlide} order={item.order}  />
+))}
+
         </div>
         <IconButton
           iconProps={{
@@ -89,6 +113,8 @@ const Carousel: React.FC = () => {
       </div>
     </div>
   );
+
+
 };
 
 export default Carousel;

@@ -5,6 +5,8 @@ import { hiddenContentStyle, mergeStyles } from '@fluentui/react/lib/Styling';
 import { useId, useBoolean } from '@fluentui/react-hooks';
 import { SuccessMessage } from './SucessMessage';
 
+import axios from 'axios';
+
 const dialogStyles = { main: { maxWidth: 450 } };
 const screenReaderOnly = mergeStyles(hiddenContentStyle);
 const dialogContentProps = {
@@ -14,9 +16,15 @@ const dialogContentProps = {
   subText: 'Esta ação não poderá ser desfeita',
 };
 
-export const ConfirmationDialog: React.FunctionComponent = () => {
+interface ConfirmationDialogProps {
+  idItem: number;
+  updateListAfterDeletion: (deletedItemId: number) => void;
+}
+
+export const ConfirmationDialog: React.FunctionComponent<ConfirmationDialogProps> = ({ idItem, updateListAfterDeletion }) => {
   const [hideDialog, { toggle: toggleHideDialog }] = useBoolean(true);
-  const [showSuccessMessage, setShowSuccessMessage] = React.useState(false); // Novo estado
+  const [showSuccessMessage, setShowSuccessMessage] = React.useState(false);
+  const [itemIdToDelete, setItemIdToDelete] = React.useState<number | null>(null);
 
   const labelId: string = useId('dialogLabel');
   const subTextId: string = useId('subTextLabel');
@@ -33,7 +41,24 @@ export const ConfirmationDialog: React.FunctionComponent = () => {
 
   const onCloseDialog = () => {
     toggleHideDialog();
-    setShowSuccessMessage(true); // Mostrar o SuccessMessage ao fechar o ConfirmationDialog
+    if (itemIdToDelete !== null) {
+      axios
+        .delete(`https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items/${itemIdToDelete}`)
+        .then(response => {
+          console.log('Resposta da API:', response.data);
+          updateListAfterDeletion(itemIdToDelete);
+          setShowSuccessMessage(true);
+        })
+        .catch(error => {
+          console.error('Erro na solicitação de exclusão:', error);
+          setShowSuccessMessage(true);
+        });
+    }
+  };
+
+  const onDeleteClick = () => {
+    setItemIdToDelete(idItem);
+    toggleHideDialog();
   };
 
   return (
@@ -42,7 +67,7 @@ export const ConfirmationDialog: React.FunctionComponent = () => {
         iconProps={{ iconName: 'Delete' }}
         title="Delete"
         ariaLabel="Delete"
-        onClick={toggleHideDialog}
+        onClick={onDeleteClick}
         style={{ color: '#ffb500' }}
         text="Open Dialog"
         secondaryText="Opens the Sample Dialog"
@@ -54,19 +79,13 @@ export const ConfirmationDialog: React.FunctionComponent = () => {
         My sample description
       </label>
 
-      <Dialog
-        hidden={hideDialog}
-        onDismiss={onCloseDialog}
-        dialogContentProps={dialogContentProps}
-        modalProps={modalProps}
-      >
+      <Dialog hidden={hideDialog} onDismiss={onCloseDialog} dialogContentProps={dialogContentProps} modalProps={modalProps}>
         <DialogFooter>
           <DefaultButton onClick={toggleHideDialog} text="Cancelar" />
           <SuccessMessage onCloseDialog={onCloseDialog} buttonText={'Excluir'} subText={'Item excluido'} />
         </DialogFooter>
       </Dialog>
 
-      {/* Renderizar SuccessMessage se showSuccessMessage for verdadeiro */}
       {showSuccessMessage && <SuccessMessage onCloseDialog={() => setShowSuccessMessage(false)} buttonText={''} subText={''} />}
     </>
   );
