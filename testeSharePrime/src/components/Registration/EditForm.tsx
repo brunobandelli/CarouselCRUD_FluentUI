@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { DefaultButton, IconButton } from '@fluentui/react/lib/Button';
-import { Panel } from '@fluentui/react/lib/Panel';
+import { Panel, PanelType } from '@fluentui/react/lib/Panel';
 import { useBoolean } from '@fluentui/react-hooks';
-import { SuccessDeleteMessage } from '../Dialog/SuccessDeleteMessage';
+import { SuccessMessage } from '../Dialog/SucessMessage'
 
 // const buttonStyles = { root: { marginRight: 8 } };
 
@@ -19,9 +19,9 @@ export const EditForm: React.FunctionComponent = () => {
   // someone might want to render in a panel footer.
   const onRenderFooterContent = React.useCallback(
     () => (
-      <div>
-        <SuccessDeleteMessage onCloseDialog={onCloseDialog} />
+        <div style={{display: 'flex', flexDirection: 'row', gap: '5px'}}>
         <DefaultButton onClick={dismissPanel}>Cancel</DefaultButton>
+        <SuccessMessage onCloseDialog={onCloseDialog}  buttonText="Salvar alterações" subText='Alterações salvas'/>
       </div>
     ),
     [dismissPanel],
@@ -39,6 +39,7 @@ export const EditForm: React.FunctionComponent = () => {
       <Panel
         isOpen={isOpen}
         onDismiss={dismissPanel}
+        type={PanelType.medium}
         headerText="Panel with footer at bottom"
         closeButtonAriaLabel="Close"
         onRenderFooterContent={onRenderFooterContent}

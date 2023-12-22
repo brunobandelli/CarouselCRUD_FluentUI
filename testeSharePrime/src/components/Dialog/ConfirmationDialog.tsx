@@ -3,7 +3,7 @@ import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog';
 import { DefaultButton, IconButton } from '@fluentui/react/lib/Button';
 import { hiddenContentStyle, mergeStyles } from '@fluentui/react/lib/Styling';
 import { useId, useBoolean } from '@fluentui/react-hooks';
-import { SuccessDeleteMessage } from './SuccessDeleteMessage';
+import { SuccessMessage } from './SucessMessage';
 
 const dialogStyles = { main: { maxWidth: 450 } };
 const screenReaderOnly = mergeStyles(hiddenContentStyle);
@@ -62,12 +62,12 @@ export const ConfirmationDialog: React.FunctionComponent = () => {
       >
         <DialogFooter>
           <DefaultButton onClick={toggleHideDialog} text="Cancelar" />
-          <SuccessDeleteMessage onCloseDialog={onCloseDialog} />
+          <SuccessMessage onCloseDialog={onCloseDialog} buttonText={'Excluir'} subText={'Item excluido'} />
         </DialogFooter>
       </Dialog>
 
       {/* Renderizar SuccessMessage se showSuccessMessage for verdadeiro */}
-      {showSuccessMessage && <SuccessDeleteMessage onCloseDialog={() => setShowSuccessMessage(false)} />}
+      {showSuccessMessage && <SuccessMessage onCloseDialog={() => setShowSuccessMessage(false)} buttonText={''} subText={''} />}
     </>
   );
 };

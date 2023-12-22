@@ -53,18 +53,15 @@ const defaultButtonStyle = {
 //   keepInBounds: true,
 // };
 // const screenReaderOnly = mergeStyles(hiddenContentStyle);
-const dialogContentProps = {
-    type: DialogType.normal,
-    title: 'Sucesso!',
-    closeButtonAriaLabel: 'Close',
-    subText: 'Imagem cadastrada',
-};
+
 
 interface SuccessMessageProps {
     onCloseDialog: () => void;
+    buttonText: string; 
+    subText: string;
 }
 
-export const SuccessMessage: React.FunctionComponent<SuccessMessageProps> = ({ onCloseDialog }) => {
+export const SuccessMessage: React.FunctionComponent<SuccessMessageProps> = ({ onCloseDialog, buttonText, subText  }) => {
     const [hideDialog, { toggle: toggleHideMessage }] = useBoolean(true);
     const labelId: string = useId('dialogLabel');
     const subTextId: string = useId('subTextLabel');
@@ -79,9 +76,16 @@ export const SuccessMessage: React.FunctionComponent<SuccessMessageProps> = ({ o
         [labelId, subTextId],
     );
 
+    const dialogContentProps = {
+        type: DialogType.normal,
+        title: 'Sucesso!',
+        closeButtonAriaLabel: 'Close',
+        subText: subText,
+    };
+
     return (
         <>
-            <DefaultButton secondaryText="Opens the Sample Dialog" onClick={toggleHideMessage} text="Cadastrar Imagem" styles={buttonStyles} />
+            <DefaultButton secondaryText="Opens the Sample Dialog" onClick={toggleHideMessage} text={buttonText}  styles={buttonStyles} />
             <Dialog
                 hidden={hideDialog}
                 onDismiss={() => {

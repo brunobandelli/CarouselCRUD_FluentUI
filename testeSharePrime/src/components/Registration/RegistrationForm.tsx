@@ -35,7 +35,7 @@ export const RegistrationForm: React.FunctionComponent = () => {
     () => (
       <div style={{display: 'flex', flexDirection: 'row', gap: '5px'}}>
         <DefaultButton onClick={dismissPanel}>Cancelar</DefaultButton>
-        <SuccessMessage onCloseDialog={onCloseDialog} />
+        <SuccessMessage onCloseDialog={onCloseDialog} buttonText="Cadastrar Imagem" subText='Imagem cadastrada'/>
       </div>
     ),
     [dismissPanel],
