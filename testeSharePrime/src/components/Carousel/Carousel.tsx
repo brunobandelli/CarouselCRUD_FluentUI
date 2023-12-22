@@ -30,22 +30,22 @@ const Carousel: React.FC = () => {
   return (
     <div>
       <Stack horizontal  horizontalAlign="center" verticalAlign="center" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '45px' }} >
-      <IconButton 
-        iconProps={{
-        iconName: '',
-        imageProps: {
-        src: previous,
-        alt: 'Chevron Left',
-        },
-        }}
-        styles={{
-          root: {
-            width: 'auto', // ou 'inherit' para herdar do elemento pai
-            height: 'auto', // ou 'inherit' para herdar do elemento pai
-            padding: '0', // Remova o padding padrão, se desejado
-          },
-        }}
-        onClick={prevSlide}
+        <IconButton 
+          iconProps={{
+            iconName: '',
+            imageProps: {
+              src: previous,
+              alt: 'Chevron Left',
+            },
+          }}
+          styles={{
+            root: {
+              width: 'auto',
+              height: 'auto',
+              padding: '0',
+            },
+          }}
+          onClick={prevSlide}
         />
         <div style={{ maxWidth: '1000px', maxHeight: '450px', overflow: 'hidden' }}>
           {sortedCarouselData.map((item, index) => (
@@ -53,21 +53,21 @@ const Carousel: React.FC = () => {
           ))}
         </div>
         <IconButton
-        iconProps={{
-        iconName: '',
-        imageProps: {
-        src: next,
-        alt: 'Chevron Right',
-        },
-        }}
-        onClick={nextSlide}
-        styles={{
-          root: {
-            width: 'auto', // ou 'inherit' para herdar do elemento pai
-            height: 'auto', // ou 'inherit' para herdar do elemento pai
-            padding: '0', // Remova o padding padrão, se desejado
-          },
-        }}
+          iconProps={{
+            iconName: '',
+            imageProps: {
+              src: next,
+              alt: 'Chevron Right',
+            },
+          }}
+          onClick={nextSlide}
+          styles={{
+            root: {
+              width: 'auto',
+              height: 'auto',
+              padding: '0',
+            },
+          }}
         />
       </Stack>
       <div style={{ textAlign: 'center', marginTop: '10px' }}>

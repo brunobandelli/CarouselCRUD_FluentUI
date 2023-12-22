@@ -15,7 +15,7 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
   description,
   image,
   link,
-  // order,
+  order,
   isActive,
 }) => {
 
@@ -47,6 +47,7 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
         <img
           src={image}
           alt={title}
+          key={order}
           style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>
