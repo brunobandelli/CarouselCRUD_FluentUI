@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { DefaultButton } from '@fluentui/react/lib/Button';
+import { DefaultButton, PrimaryButton } from '@fluentui/react/lib/Button';
 import { Panel, PanelType } from '@fluentui/react/lib/Panel';
 import { useBoolean } from '@fluentui/react-hooks';
-import { SuccessMessage } from '../Dialog/SucessMessage';
 import { TextField } from '@fluentui/react/lib/TextField';
 import { Stack, IStackProps, IStackStyles } from '@fluentui/react/lib/Stack';
 import axios from 'axios';
@@ -21,6 +20,18 @@ const buttonStyles = {
   },
 };
 
+const primaryButtonStyle = {
+  root: {
+    background: '#ffb500',
+    color: 'white',
+    selectors: {
+      ':hover': {
+        background: '#ffc700!important',  // Altere para a cor desejada no hover
+      },
+    },
+  },
+};
+
 const stackTokens = { childrenGap: 50 };
 const stackStyles: Partial<IStackStyles> = { root: { width: 600 } };
 const columnProps: Partial<IStackProps> = {
@@ -28,12 +39,10 @@ const columnProps: Partial<IStackProps> = {
   styles: { root: { width: '100%' } },
 };
 
-export const RegistrationForm: React.FunctionComponent = () => {
+export const RegistrationForm: React.FunctionComponent<{ onCadastroSucesso: () => void }> = ({ onCadastroSucesso }) => {
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
-
-  function onCloseDialog(): void {
-    dismissPanel();
-  }
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [formErrors, setFormErrors] = React.useState<{ [key: string]: string | undefined }>({});
 
   const handleCadastroImagem = async () => {
     // Obtenha os valores dos campos do formulário
@@ -42,6 +51,30 @@ export const RegistrationForm: React.FunctionComponent = () => {
     const urlArquivo = document.getElementById('urlArquivo') as HTMLInputElement;
     const urlDirecionamento = document.getElementById('urlDirecionamento') as HTMLInputElement;
     const ordem = document.getElementById('ordem') as HTMLInputElement;
+
+    // Verifique se todos os campos obrigatórios estão preenchidos
+    const errors: { [key: string]: string | undefined } = {};
+    if (!titulo.value) errors['titulo'] = 'Campo obrigatório';
+    if (!descricao.value) errors['descricao'] = 'Campo obrigatório';
+    if (!urlArquivo.value) errors['urlArquivo'] = 'Campo obrigatório';
+    if (!urlDirecionamento.value) errors['urlDirecionamento'] = 'Campo obrigatório';
+
+    // Verifique se o campo 'Ordem' contém apenas números
+    if (!/^\d+$/.test(ordem.value)) {
+      errors['ordem'] = 'Campo obrigatório';
+    } else {
+      // Se for um número, converta para inteiro
+      ordem.value = String(parseInt(ordem.value, 10));
+    }
+
+    setFormErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+
+    // Inicie o processo de envio do formulário
+    setIsSubmitting(true);
 
     // Faça a solicitação de cadastro usando Axios
     try {
@@ -53,23 +86,29 @@ export const RegistrationForm: React.FunctionComponent = () => {
         order: ordem.value,
       });
 
+      // Atualize a lista chamando a função do componente pai
+      onCadastroSucesso();
+
       console.log('Imagem cadastrada com sucesso:', response.data);
 
       // Feche o painel após o cadastro bem-sucedido
       dismissPanel();
     } catch (error) {
       console.error('Erro ao cadastrar imagem:', error);
+    } finally {
+      // Finalize o processo de envio do formulário, independentemente do resultado
+      setIsSubmitting(false);
     }
   };
 
   const onRenderFooterContent = React.useCallback(
     () => (
       <div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>
-        <DefaultButton onClick={dismissPanel}>Cancelar</DefaultButton>
-        <SuccessMessage onCloseDialog={()=>{onCloseDialog(), handleCadastroImagem()}} buttonText="Cadastrar Imagem" subText="Imagem cadastrada"  />
+        <DefaultButton onClick={dismissPanel} disabled={isSubmitting}>Cancelar</DefaultButton>
+        <PrimaryButton onClick={handleCadastroImagem} text="Cadastrar Imagem" styles={primaryButtonStyle} disabled={isSubmitting} />
       </div>
     ),
-    [dismissPanel, handleCadastroImagem],
+    [dismissPanel, handleCadastroImagem, isSubmitting],
   );
 
   return (
@@ -87,11 +126,54 @@ export const RegistrationForm: React.FunctionComponent = () => {
         <form noValidate autoComplete="off">
           <Stack horizontal tokens={stackTokens} styles={stackStyles}>
             <Stack {...columnProps}>
-              <TextField id="titulo" label="Título" errorMessage="Error message" required />
-              <TextField id="descricao" label="Descrição" multiline resizable={false} errorMessage="Error message" required style={{ height: '100px' }} />
-              <TextField id="urlArquivo" label="URL arquivo" errorMessage="Error message" required />
-              <TextField id="urlDirecionamento" label="URL direcionamento" errorMessage="Error message" required />
-              <TextField id="ordem" label="Ordem" errorMessage="Error message" required />
+              <TextField
+                id="titulo"
+                label="Título"
+                errorMessage={formErrors['titulo']}
+                required
+                maxLength={50}
+                onChange={() => setFormErrors({ ...formErrors, titulo: undefined })}
+              />
+              <TextField
+                id="descricao"
+                label="Descrição"
+                multiline
+                resizable={false}
+                errorMessage={formErrors['descricao']}
+                required
+                maxLength={430}
+                style={{ height: '100px' }}
+                onChange={() => setFormErrors({ ...formErrors, descricao: undefined })}
+              />
+              <TextField
+                id="urlArquivo"
+                label="URL arquivo"
+                errorMessage={formErrors['urlArquivo']}
+                required
+                onChange={() => setFormErrors({ ...formErrors, urlArquivo: undefined })}
+              />
+              <TextField
+                id="urlDirecionamento"
+                label="URL direcionamento"
+                errorMessage={formErrors['urlDirecionamento']}
+                required
+                onChange={() => setFormErrors({ ...formErrors, urlDirecionamento: undefined })}
+              />
+              <TextField
+                id="ordem"
+                label="Ordem"
+                // type='number'
+                errorMessage={formErrors['ordem']}
+                required
+                onChange={(ev, newValue) => {
+                  setFormErrors({ ...formErrors, ordem: undefined });
+                  // Verifica se 'ev.target' é do tipo HTMLInputElement antes de acessar 'value'
+                  if (ev?.target instanceof HTMLInputElement) {
+                    // Remova caracteres não numéricos
+                    ev.target.value = newValue ? newValue.replace(/\D/g, '') : '';
+                  }
+                }}
+              />
             </Stack>
           </Stack>
         </form>

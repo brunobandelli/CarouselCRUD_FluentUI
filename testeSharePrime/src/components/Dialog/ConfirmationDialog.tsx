@@ -1,11 +1,23 @@
 import * as React from 'react';
 import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog';
-import { DefaultButton, IconButton } from '@fluentui/react/lib/Button';
+import { DefaultButton, IconButton, PrimaryButton } from '@fluentui/react/lib/Button';
 import { hiddenContentStyle, mergeStyles } from '@fluentui/react/lib/Styling';
 import { useId, useBoolean } from '@fluentui/react-hooks';
 import { SuccessMessage } from './SucessMessage';
 
 import axios from 'axios';
+
+const buttonStyles = {
+  root: {
+      background: '#ffb500',
+      color: 'white',
+      selectors: {
+          ':hover': {
+              background: '#ffc700!important',  // Altere para a cor desejada no hover
+          },
+      },
+  },
+};
 
 const dialogStyles = { main: { maxWidth: 450 } };
 const screenReaderOnly = mergeStyles(hiddenContentStyle);
@@ -82,11 +94,14 @@ export const ConfirmationDialog: React.FunctionComponent<ConfirmationDialogProps
       <Dialog hidden={hideDialog} onDismiss={onCloseDialog} dialogContentProps={dialogContentProps} modalProps={modalProps}>
         <DialogFooter>
           <DefaultButton onClick={toggleHideDialog} text="Cancelar" />
-          <SuccessMessage onCloseDialog={onCloseDialog} buttonText={'Excluir'} subText={'Item excluido'} />
+          <PrimaryButton onClick={onCloseDialog} text="Excluir" styles={buttonStyles}/>
+          {/* <SuccessMessage onCloseDialog={onCloseDialog} buttonText={'Excluir'} subText={'Item excluido'} /> */}
         </DialogFooter>
       </Dialog>
 
-      {showSuccessMessage && <SuccessMessage onCloseDialog={() => setShowSuccessMessage(false)} buttonText={''} subText={''} />}
+      {showSuccessMessage && <SuccessMessage onCloseDialog={() => setShowSuccessMessage(false)} subText={'Item excluido'} 
+      // buttonText={''}
+       />}
     </>
   );
 };

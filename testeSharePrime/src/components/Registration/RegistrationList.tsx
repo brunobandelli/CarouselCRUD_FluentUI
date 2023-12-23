@@ -47,10 +47,12 @@ interface ICarouselItem {
 export class RegistrationList extends React.Component<{}, IDetailsListDocumentsExampleState> {
   private _selection: Selection;
 
-  private _copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
+  private _copyAndSort<T>(items: T[], columnKey: number, isSortedDescending?: boolean): T[] {
     const order = columnKey as keyof T;
     return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[order] < b[order] : a[order] > b[order]) ? 1 : -1));
   }
+
+ 
 
   private _onColumnClick = (_ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
     const { columns, items } = this.state;
@@ -68,7 +70,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
         newCol.isSortedDescending = true;
       }
     });
-    const newItems = this._copyAndSort(items, currColumn.fieldName!, currColumn.isSortedDescending);
+    const newItems = this._copyAndSort(items, currColumn.data!, currColumn.isSortedDescending);
     this.setState({
       items: newItems,
     });
@@ -79,6 +81,12 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
     this.setState({ items: updatedItems });
   };
   
+  private onCadastroSucesso = () => {
+    // Atualize o estado da lista aqui
+    axios.get<ICarouselItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
+      .then(response => this.setState({ items: response.data }))
+      .catch(error => console.error('Error fetching carousel data:', error));
+  };
 
   constructor(props: {}) {
     super(props);
@@ -88,8 +96,8 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
         key: 'column1',
         name: 'ID',
         fieldName: 'order',
-        minWidth: 10,
-        maxWidth: 30,
+        minWidth: 20,
+        maxWidth: 40,
         isResizable: true,
         isSorted: true,
         isSortedDescending: false,
@@ -206,7 +214,11 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
   componentDidMount() {
     // Fetch data from the API when the component mounts
     axios.get<ICarouselItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
-      .then(response => this.setState({ items: response.data }))
+      .then(response => {
+        // Ordena os itens com base no campo "order"
+        const sortedItems = response.data.sort((a, b) => a.order - b.order);
+        this.setState({ items: sortedItems });
+      })
       .catch(error => console.error('Error fetching carousel data:', error));
   }
 
@@ -217,7 +229,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       <div className={classNames.container}>
         <div className={classNames.headerForm}>
           <div><span style={{ fontWeight: '700' }}>Cadastro de imagens</span></div>
-          <div><RegistrationForm /></div>
+          <div><RegistrationForm  onCadastroSucesso={this.onCadastroSucesso}/></div>
         </div>
 
         <div style={{ maxWidth: '100%', overflowX: 'auto', padding: '20px', margin: '10px', background: 'white' }}>

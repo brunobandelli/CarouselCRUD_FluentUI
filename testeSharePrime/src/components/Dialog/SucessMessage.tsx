@@ -5,7 +5,9 @@ import { DefaultButton } from '@fluentui/react/lib/Button';
 // import { Toggle } from '@fluentui/react/lib/Toggle';
 // import { ContextualMenu } from '@fluentui/react/lib/ContextualMenu';
 import { FontIcon } from '@fluentui/react/lib/Icon';
-import { useId, useBoolean } from '@fluentui/react-hooks';
+import { useId, 
+    // useBoolean
+ } from '@fluentui/react-hooks';
 import { mergeStyleSets, mergeStyles } from '@fluentui/react';
 
 const dialogStyles = { main: { maxWidth: 450 } }
@@ -23,17 +25,17 @@ const classNames = mergeStyleSets({
 
 });
 
-const buttonStyles = {
-    root: {
-        background: '#ffb500',
-        color: 'white',
-        selectors: {
-            ':hover': {
-                background: '#ffc700!important',  // Altere para a cor desejada no hover
-            },
-        },
-    },
-};
+// const buttonStyles = {
+//     root: {
+//         background: '#ffb500',
+//         color: 'white',
+//         selectors: {
+//             ':hover': {
+//                 background: '#ffc700!important',  // Altere para a cor desejada no hover
+//             },
+//         },
+//     },
+// };
 
 const defaultButtonStyle = {
     root: {
@@ -57,12 +59,15 @@ const defaultButtonStyle = {
 
 interface SuccessMessageProps {
     onCloseDialog: () => void;
-    buttonText: string; 
+    // buttonText: string; 
     subText: string;
 }
 
-export const SuccessMessage: React.FunctionComponent<SuccessMessageProps> = ({ onCloseDialog, buttonText, subText  }) => {
-    const [hideDialog, { toggle: toggleHideMessage }] = useBoolean(true);
+export const SuccessMessage: React.FunctionComponent<SuccessMessageProps> = ({ onCloseDialog,
+    //  buttonText, 
+     subText  }) => {
+    // const [hideDialog, { toggle: toggleHideMessage }] = useBoolean(true);
+    const [showModal, setShowModal] = React.useState(true);
     const labelId: string = useId('dialogLabel');
     const subTextId: string = useId('subTextLabel');
 
@@ -85,11 +90,13 @@ export const SuccessMessage: React.FunctionComponent<SuccessMessageProps> = ({ o
 
     return (
         <>
-            <DefaultButton secondaryText="Opens the Sample Dialog" onClick={toggleHideMessage} text={buttonText}  styles={buttonStyles} />
+            {/* <DefaultButton secondaryText="Opens the Sample Dialog" onClick={toggleHideMessage} text={buttonText}  styles={buttonStyles} /> */}
             <Dialog
-                hidden={hideDialog}
+                // hidden={hideDialog}
+                hidden={!showModal}
                 onDismiss={() => {
-                    toggleHideMessage();
+                    // toggleHideMessage();
+                    setShowModal(false);
                     onCloseDialog(); // Chamando a função onCloseDialog quando o diálogo é fechado
                 }}
                 dialogContentProps={dialogContentProps}
@@ -101,7 +108,8 @@ export const SuccessMessage: React.FunctionComponent<SuccessMessageProps> = ({ o
                     <DefaultButton
                         styles={defaultButtonStyle}
                         onClick={() => {
-                            toggleHideMessage();
+                            // toggleHideMessage();
+                            setShowModal(false);
                             onCloseDialog(); // Chamando a função onCloseDialog quando o botão "Fechar" é clicado
                         }} text="Fechar"
                     />
