@@ -35,7 +35,8 @@ interface IDetailsListDocumentsExampleState {
   columns: IColumn[];
   items: ICarouselItem[];
   isCompactMode: boolean;
-  showSuccessMessage: boolean
+  showSuccessMessage: boolean;
+  subText: string
 }
 
 interface ICarouselItem {
@@ -86,7 +87,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       .then(response => {
         console.log('Resposta da API:', response.data);
         const updatedItems = response.data.filter(item => item.id !== deletedItemId).sort((a, b) => a.order - b.order);
-        this.setState({ items: updatedItems, showSuccessMessage: true });
+        this.setState({ items: updatedItems, showSuccessMessage: true, subText: 'Item excluído' });
 
         // const updatedItems = response.data.filter(item => item.id !== deletedItemId).sort((a, b) => a.order - b.order);
         // window.alert('Ok')
@@ -120,9 +121,14 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       .then(response => {
         // Ordena os itens com base no campo "order"
         const sortedItems = response.data.sort((a, b) => a.order - b.order);
-        this.setState({ items: sortedItems });
+        this.setState({ items: sortedItems, showSuccessMessage: true, subText: 'Imagem Cadastrada' });
       })
-      .catch(error => console.error('Error fetching carousel data:', error));
+      .catch(error =>
+      {    
+        console.error('Error fetching carousel data:', error);
+        this.setState({ showSuccessMessage: true });
+      }
+        );
   };
   constructor(props: {}) {
     super(props);
@@ -231,7 +237,8 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       items: [],
       columns,
       isCompactMode: true,
-      showSuccessMessage: false
+      showSuccessMessage: false,
+      subText: ""
     };
   }
 
@@ -247,7 +254,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
   }
 
   public render() {
-    const { columns, isCompactMode, items, showSuccessMessage } = this.state;
+    const { columns, isCompactMode, items, showSuccessMessage, subText } = this.state;
   
     return (
       <div className={classNames.container}>
@@ -281,7 +288,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
         {showSuccessMessage && (
           <SuccessMessage
             onCloseDialog={() => this.setState({ showSuccessMessage: false })}
-            subText={'Item excluído'}
+            subText={subText}
           />
         )}
       </div>
