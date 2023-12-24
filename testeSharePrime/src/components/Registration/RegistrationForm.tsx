@@ -39,7 +39,7 @@ const columnProps: Partial<IStackProps> = {
   styles: { root: { width: '100%' } },
 };
 
-export const RegistrationForm: React.FunctionComponent<{ onCadastroSucesso: () => void }> = ({ onCadastroSucesso }) => {
+export const RegistrationForm: React.FunctionComponent<{ updateListAfterRegister: () => void }> = ({ updateListAfterRegister }) => {
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [formErrors, setFormErrors] = React.useState<{ [key: string]: string | undefined }>({});
@@ -87,7 +87,7 @@ export const RegistrationForm: React.FunctionComponent<{ onCadastroSucesso: () =
       });
 
       // Atualize a lista chamando a função do componente pai
-      onCadastroSucesso();
+      updateListAfterRegister();
 
       console.log('Imagem cadastrada com sucesso:', response.data);
 

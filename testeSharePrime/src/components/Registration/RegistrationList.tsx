@@ -40,8 +40,8 @@ interface ICarouselItem {
   id: number;
   title: string;
   description: string;
-  urlArquivo: string;
-  urlDirecionamento: string;
+  image: string;
+  link: string;
 }
 
 export class RegistrationList extends React.Component<{}, IDetailsListDocumentsExampleState> {
@@ -81,13 +81,27 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
     this.setState({ items: updatedItems });
   };
   
-  private onCadastroSucesso = () => {
-    // Atualize o estado da lista aqui
+  // private onCadastroSucesso = (): void => {
+  //   // Obtenha os dados mais recentes da API e atualize o estado da lista
+  //   axios.get<ICarouselItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
+  //     .then(response => {
+  //       // Ordena os itens com base no campo "order"
+  //       const sortedItems = response.data.sort((a, b) => a.order - b.order);
+  //       this.setState({ items: sortedItems });
+  //     })
+  //     .catch(error => console.error('Error fetching carousel data:', error));
+  // };
+
+  private updateListAfterRegisterOrEdit = (): void => {
+    // Obtenha os dados mais recentes da API e atualize o estado da lista
     axios.get<ICarouselItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
-      .then(response => this.setState({ items: response.data }))
+      .then(response => {
+        // Ordena os itens com base no campo "order"
+        const sortedItems = response.data.sort((a, b) => a.order - b.order);
+        this.setState({ items: sortedItems });
+      })
       .catch(error => console.error('Error fetching carousel data:', error));
   };
-
   constructor(props: {}) {
     super(props);
 
@@ -182,7 +196,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
         maxWidth: 16,
         isRowHeader: true,
         onRender: (
-          // item: ICarouselItem
+          item: ICarouselItem
           ) => (
           <>
           {/* <IconButton
@@ -191,7 +205,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
             ariaLabel="Edit"
             onClick={() => this._onEditIconClick(item)}
             style={{ color: '#ffb500' }} /> */}
-            <EditForm/>
+            <EditForm updateListAfterEdit={this.updateListAfterRegisterOrEdit} key={''} order={item.order} id={item.id} title={item.title} description={item.description} urlArquivo={item.image} urlDirecionamento={item.link} />
             </>
         ),
       },
@@ -229,7 +243,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       <div className={classNames.container}>
         <div className={classNames.headerForm}>
           <div><span style={{ fontWeight: '700' }}>Cadastro de imagens</span></div>
-          <div><RegistrationForm  onCadastroSucesso={this.onCadastroSucesso}/></div>
+          <div><RegistrationForm  updateListAfterRegister={this.updateListAfterRegisterOrEdit}/></div>
         </div>
 
         <div style={{ maxWidth: '100%', overflowX: 'auto', padding: '20px', margin: '10px', background: 'white' }}>
