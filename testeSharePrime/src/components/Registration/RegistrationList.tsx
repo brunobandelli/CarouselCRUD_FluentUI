@@ -9,6 +9,8 @@ import { RegistrationForm } from './RegistrationForm';
 import { ConfirmationDialog } from '../Dialog/ConfirmationDialog';
 import { EditForm } from './EditForm';
 import axios from 'axios';
+import { SuccessMessage } from '../Dialog/SucessMessage';
+// import { SuccessMessage } from '../Dialog/SucessMessage';
 
 const classNames = mergeStyleSets({
   container: {
@@ -28,10 +30,12 @@ const classNames = mergeStyleSets({
   },
 });
 
+
 interface IDetailsListDocumentsExampleState {
   columns: IColumn[];
   items: ICarouselItem[];
   isCompactMode: boolean;
+  showSuccessMessage: boolean
 }
 
 interface ICarouselItem {
@@ -46,7 +50,7 @@ interface ICarouselItem {
 
 export class RegistrationList extends React.Component<{}, IDetailsListDocumentsExampleState> {
   private _selection: Selection;
-
+  
   private _copyAndSort<T>(items: T[], columnKey: number, isSortedDescending?: boolean): T[] {
     const order = columnKey as keyof T;
     return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[order] < b[order] : a[order] > b[order]) ? 1 : -1));
@@ -77,22 +81,40 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
   };
 
   private updateListAfterDeletion = (deletedItemId: number): void => {
-    const updatedItems = this.state.items.filter(item => item.id !== deletedItemId);
-    this.setState({ items: updatedItems });
+    // Obtenha os dados mais recentes da API e atualize o estado da lista
+      axios.get<ICarouselItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
+      .then(response => {
+        console.log('Resposta da API:', response.data);
+        const updatedItems = response.data.filter(item => item.id !== deletedItemId).sort((a, b) => a.order - b.order);
+        this.setState({ items: updatedItems, showSuccessMessage: true });
+
+        // const updatedItems = response.data.filter(item => item.id !== deletedItemId).sort((a, b) => a.order - b.order);
+        // window.alert('Ok')
+        // this.setState({ items: updatedItems });
+      })
+      .catch(error => {
+        console.error('Erro na solicitação de exclusão:', error);
+        this.setState({ showSuccessMessage: true });
+      });
   };
   
-  // private onCadastroSucesso = (): void => {
+
+  // private updateListAfterDeletion = (deletedItemId: number): void => {
+    
+
   //   // Obtenha os dados mais recentes da API e atualize o estado da lista
   //   axios.get<ICarouselItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
   //     .then(response => {
   //       // Ordena os itens com base no campo "order"
-  //       const sortedItems = response.data.sort((a, b) => a.order - b.order);
-  //       this.setState({ items: sortedItems });
+  //       const updatedItems = response.data.filter(item => item.id !== deletedItemId).sort((a, b) => a.order - b.order);
+  //       window.alert('Ok')
+  //       this.setState({ items: updatedItems });
   //     })
   //     .catch(error => console.error('Error fetching carousel data:', error));
-  // };
 
-  private updateListAfterRegisterOrEdit = (): void => {
+  // };
+  
+  private updateListAfterEvent = (): void => {
     // Obtenha os dados mais recentes da API e atualize o estado da lista
     axios.get<ICarouselItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
       .then(response => {
@@ -176,13 +198,6 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
           item: ICarouselItem
           ) => (
           <>
-          {/* <IconButton
-            iconProps={{ iconName: 'Delete' }}
-            title="Delete"
-            ariaLabel="Delete"
-            onClick={() => this._onDeleteIconClick(item)}
-            style={{ color: '#ffb500' }} /> */}
-            {/* <ConfirmationDialog idItem={item.id}/> */}
             <ConfirmationDialog idItem={item.id} updateListAfterDeletion={this.updateListAfterDeletion} />
             </>
         ),
@@ -199,14 +214,8 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
           item: ICarouselItem
           ) => (
           <>
-          {/* <IconButton
-            iconProps={{ iconName: 'Edit' }}
-            title="Edit"
-            ariaLabel="Edit"
-            onClick={() => this._onEditIconClick(item)}
-            style={{ color: '#ffb500' }} /> */}
-            <EditForm updateListAfterEdit={this.updateListAfterRegisterOrEdit} key={''} order={item.order} id={item.id} title={item.title} description={item.description} urlArquivo={item.image} urlDirecionamento={item.link} />
-            </>
+            <EditForm updateListAfterEdit={this.updateListAfterEvent} key={''} order={item.order} id={item.id} title={item.title} description={item.description} urlArquivo={item.image} urlDirecionamento={item.link} />
+          </>
         ),
       },
     ];
@@ -222,6 +231,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       items: [],
       columns,
       isCompactMode: true,
+      showSuccessMessage: false
     };
   }
 
@@ -237,15 +247,15 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
   }
 
   public render() {
-    const { columns, isCompactMode, items } = this.state;
-
+    const { columns, isCompactMode, items, showSuccessMessage } = this.state;
+  
     return (
       <div className={classNames.container}>
         <div className={classNames.headerForm}>
           <div><span style={{ fontWeight: '700' }}>Cadastro de imagens</span></div>
-          <div><RegistrationForm  updateListAfterRegister={this.updateListAfterRegisterOrEdit}/></div>
+          <div><RegistrationForm  updateListAfterRegister={this.updateListAfterEvent}/></div>
         </div>
-
+  
         <div style={{ maxWidth: '100%', overflowX: 'auto', padding: '20px', margin: '10px', background: 'white' }}>
           <div className={classNames.controlWrapper}>
             <Announced message={`Number of items: ${items.length}.`} />
@@ -267,6 +277,13 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
             </MarqueeSelection>
           </div>
         </div>
+  
+        {showSuccessMessage && (
+          <SuccessMessage
+            onCloseDialog={() => this.setState({ showSuccessMessage: false })}
+            subText={'Item excluído'}
+          />
+        )}
       </div>
     );
   }
