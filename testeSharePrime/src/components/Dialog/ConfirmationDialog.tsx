@@ -108,7 +108,7 @@ export const ConfirmationDialog: React.FunctionComponent<ConfirmationDialogProps
         My sample description
       </label>
 
-      <Dialog hidden={hideDialog} onDismiss={onCloseDialog} dialogContentProps={dialogContentProps} modalProps={modalProps}>
+      <Dialog hidden={hideDialog} onDismiss={toggleHideDialog} dialogContentProps={dialogContentProps} modalProps={modalProps}>
         <DialogFooter>
           <DefaultButton onClick={toggleHideDialog} text="Cancelar" />
           <PrimaryButton onClick={onCloseDialog} text="Excluir" styles={buttonStyles}/>
