@@ -16,6 +16,7 @@ interface EditFormProps {
   urlArquivo: string;
   urlDirecionamento: string;
   updateListAfterEdit: () => void;
+  subText: () => void
 }
 
 

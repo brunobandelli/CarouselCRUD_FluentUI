@@ -49,6 +49,9 @@ interface ICarouselItem {
   link: string;
 }
 
+// const [subText, SetSubText] = React.useState("")
+
+
 export class RegistrationList extends React.Component<{}, IDetailsListDocumentsExampleState> {
   private _selection: Selection;
   
@@ -114,14 +117,14 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
   //     .catch(error => console.error('Error fetching carousel data:', error));
 
   // };
-  
-  private updateListAfterEvent = (): void => {
+  private updateListAfterEvent = (subText: any): void => {
     // Obtenha os dados mais recentes da API e atualize o estado da lista
     axios.get<ICarouselItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
       .then(response => {
         // Ordena os itens com base no campo "order"
         const sortedItems = response.data.sort((a, b) => a.order - b.order);
-        this.setState({ items: sortedItems, showSuccessMessage: true, subText: 'Imagem Cadastrada' });
+        
+        this.setState({ items: sortedItems, showSuccessMessage: true, subText: subText });
       })
       .catch(error =>
       {    
@@ -220,7 +223,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
           item: ICarouselItem
           ) => (
           <>
-            <EditForm updateListAfterEdit={this.updateListAfterEvent} key={''} order={item.order} id={item.id} title={item.title} description={item.description} urlArquivo={item.image} urlDirecionamento={item.link} />
+            <EditForm updateListAfterEdit={()=>this.updateListAfterEvent('Alterações salvas')} subText={()=>""} key={''} order={item.order} id={item.id} title={item.title} description={item.description} urlArquivo={item.image} urlDirecionamento={item.link} />
           </>
         ),
       },
@@ -260,7 +263,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       <div className={classNames.container}>
         <div className={classNames.headerForm}>
           <div><span style={{ fontWeight: '700' }}>Cadastro de imagens</span></div>
-          <div><RegistrationForm  updateListAfterRegister={this.updateListAfterEvent}/></div>
+          <div><RegistrationForm  updateListAfterRegister={()=>this.updateListAfterEvent("Imagem cadastrada")}/></div>
         </div>
   
         <div style={{ maxWidth: '100%', overflowX: 'auto', padding: '20px', margin: '10px', background: 'white' }}>
