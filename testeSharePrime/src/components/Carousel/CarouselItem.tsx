@@ -25,11 +25,12 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
     <div
       style={{
         display: isActive ? 'flex' : 'none',
-        maxWidth: '1000px',
-        // maxHeight: '450px',
-        maxHeight: '400px',
-        width: '100%',
-        height: '100%',
+        // maxWidth: '1000px',
+        // minWidth: '1000px',
+        // maxHeight: '400px',
+        // minHeight: '400px',
+        width: '1000PX',
+        height: '400px',
         alignItems: 'center',
         margin: 'auto',
         cursor: 'pointer',
@@ -37,7 +38,7 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
       }}
       onClick={handleLinkClick}
     >
-      <div style={{ flex: '40%', padding: '20px', textAlign: 'start', fontSize: '16px', color: 'black' }}>
+      <div style={{ flex: '40%', padding: '20px', textAlign: 'start', fontSize: '16px', color: 'black', overflowWrap: 'anywhere' }}>
         <h2>{title}</h2>
         <p style={{ fontSize: '12px', color: 'gray' }}>{description}</p>
       </div>
@@ -47,7 +48,7 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
           src={image}
           alt={title}
           key={`${order}-${isActive}`}  
-          style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
+          style={{ display: 'block', width: '100%', height: '400px', objectFit: 'cover' }}
         />
       </div>
     </div>

@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Announced } from '@fluentui/react/lib/Announced';
-import { DetailsList, DetailsListLayoutMode, Selection, SelectionMode, IColumn, CheckboxVisibility } from '@fluentui/react/lib/DetailsList';
+import { DetailsList, DetailsListLayoutMode, Selection, IColumn, CheckboxVisibility } from '@fluentui/react/lib/DetailsList';
 // import {IconButton } from '@fluentui/react'
 import { MarqueeSelection } from '@fluentui/react/lib/MarqueeSelection';
 import { mergeStyleSets } from '@fluentui/react/lib/Styling';
@@ -15,7 +14,7 @@ import { SuccessMessage } from '../Dialog/SucessMessage';
 const classNames = mergeStyleSets({
   container: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   headerForm: {
     display: 'flex',
@@ -23,6 +22,7 @@ const classNames = mergeStyleSets({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: '10px',
+
   },
   controlWrapper: {
     display: 'flex',
@@ -141,8 +141,8 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
         key: 'column1',
         name: 'ID',
         fieldName: 'order',
-        minWidth: 20,
-        maxWidth: 40,
+        minWidth: 30,
+        maxWidth: 60,
         isResizable: true,
         isSorted: true,
         isSortedDescending: false,
@@ -252,6 +252,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
         // Ordena os itens com base no campo "order"
         const sortedItems = response.data.sort((a, b) => a.order - b.order);
         this.setState({ items: sortedItems });
+        console.log(sortedItems)
       })
       .catch(error => console.error('Error fetching carousel data:', error));
   }
@@ -266,22 +267,18 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
           <div><RegistrationForm  updateListAfterRegister={()=>this.updateListAfterEvent("Imagem cadastrada")}/></div>
         </div>
   
-        <div style={{ maxWidth: '100%', overflowX: 'auto', padding: '20px', margin: '10px', background: 'white' }}>
+        <div style={{maxWidth: '100%', overflowX: 'auto', padding: '20px', margin: '10px', background: 'white' }}>
           <div className={classNames.controlWrapper}>
-            <Announced message={`Number of items: ${items.length}.`} />
             <MarqueeSelection selection={this._selection}>
               <DetailsList
+                
                 items={items}
                 columns={columns}
                 compact={isCompactMode}
-                selectionMode={SelectionMode.multiple}
-                setKey="multiple"
                 layoutMode={DetailsListLayoutMode.justified}
                 isHeaderVisible={true}
                 selection={this._selection}
                 selectionPreservedOnEmptyClick={true}
-                ariaLabelForSelectionColumn="Toggle selection"
-                ariaLabelForSelectAllCheckbox="Toggle selection for all items"
                 checkboxVisibility={CheckboxVisibility.hidden}
               />
             </MarqueeSelection>
