@@ -5,6 +5,8 @@ import { useBoolean } from '@fluentui/react-hooks';
 import { TextField } from '@fluentui/react/lib/TextField';
 import { Stack, IStackProps, IStackStyles } from '@fluentui/react/lib/Stack';
 import axios from 'axios';
+import { ICarouselItem } from './RegistrationList';
+
 
 
 interface EditFormProps {
@@ -17,7 +19,11 @@ interface EditFormProps {
   urlDirecionamento: string;
   updateListAfterEdit: () => void;
   subText: () => void
+  items: ICarouselItem[]
 }
+
+
+
 
 
 const primaryButtonStyle = {
@@ -55,6 +61,7 @@ export const EditForm: React.FunctionComponent<EditFormProps> = (_props) => {
     const urlDirecionamento = document.getElementById('urlDirecionamento') as HTMLInputElement;
     const ordem = document.getElementById('ordem') as HTMLInputElement;
 
+
     // Verifique se todos os campos obrigatórios estão preenchidos
     const errors: { [key: string]: string | undefined } = {};
     if (!titulo.value) errors['titulo'] = 'Campo obrigatório';
@@ -62,10 +69,18 @@ export const EditForm: React.FunctionComponent<EditFormProps> = (_props) => {
     if (!urlArquivo.value) errors['urlArquivo'] = 'Campo obrigatório';
     if (!urlDirecionamento.value) errors['urlDirecionamento'] = 'Campo obrigatório';
 
-    // Verifique se o campo 'Ordem' contém apenas números
-    if (!/^\d+$/.test(ordem.value)) {
+ // Verifique se o campo 'Ordem' contém apenas números.
+    if (!/^\d+$/.test(ordem.value) || isNaN(Number(ordem.value))) {
       errors['ordem'] = 'Campo obrigatório';
-    } else {
+    // Verifica se o campo 'Ordem' é inferior a 1 ou superior a 20.
+    } else if(Number(ordem.value)< 1 || Number(ordem.value) > 20){
+      errors['ordem'] = 'A ordem deve ser um número entre 1 e 20';
+    // Verifica se o campo 'Ordem' está preenchido com um numero ja existente
+    }
+    else if(_props.items.some(item => item.order == Number(ordem.value) &&  item.order !== _props.order)){
+      errors['ordem'] = 'Este número de ordem já está em uso';
+    }
+    else {
       // Se for um número, converta para inteiro
       ordem.value = String(parseInt(ordem.value, 10));
     }
@@ -186,7 +201,20 @@ export const EditForm: React.FunctionComponent<EditFormProps> = (_props) => {
                   // Verifica se 'ev.target' é do tipo HTMLInputElement antes de acessar 'value'
                   if (ev?.target instanceof HTMLInputElement) {
                     // Remova caracteres não numéricos
-                    ev.target.value = newValue ? newValue.replace(/\D/g, '') : '';
+                    // ev.target.value = newValue ? newValue.replace(/\D/g, '') : '';
+                    const sanitizedValue = newValue ? newValue.replace(/\D/g, '') : '';
+                          // Limite o valor entre 1 e 20
+                    const clampedValue = sanitizedValue ? Math.min(Math.max(parseInt(sanitizedValue, 10), 1), 20) : "";
+
+                    ev.target.value = String(clampedValue);
+
+                  //  Verifique se o número já está em uso
+                  if(Number(clampedValue) == _props.order){
+                    setFormErrors({ ...formErrors, ordem: 'Valor atual' })
+                  }
+                  else if (_props.items.some(item => item.order == Number(clampedValue ))) {
+                    setFormErrors({ ...formErrors, ordem: 'Este número de ordem já está em uso' })
+                  }
                   }
                 }}
               />

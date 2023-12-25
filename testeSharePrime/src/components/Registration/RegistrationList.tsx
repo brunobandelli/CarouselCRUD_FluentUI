@@ -31,7 +31,7 @@ const classNames = mergeStyleSets({
 });
 
 
-interface IDetailsListDocumentsExampleState {
+export interface IDetailsListDocumentsExampleState {
   columns: IColumn[];
   items: ICarouselItem[];
   isCompactMode: boolean;
@@ -49,12 +49,9 @@ export interface ICarouselItem {
   link: string;
 }
 
-// const [subText, SetSubText] = React.useState("")
-
 
 export class RegistrationList extends React.Component<{}, IDetailsListDocumentsExampleState> {
   private _selection: Selection;
-  
   private _copyAndSort<T>(items: T[], columnKey: number, isSortedDescending?: boolean): T[] {
     const order = columnKey as keyof T;
     return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[order] < b[order] : a[order] > b[order]) ? 1 : -1));
@@ -133,8 +130,11 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       }
         );
   };
+
+
   constructor(props: {}) {
     super(props);
+
 
     const columns: IColumn[] = [
       {
@@ -219,11 +219,10 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
         minWidth: 16,
         maxWidth: 16,
         isRowHeader: true,
-        onRender: (
-          item: ICarouselItem
-          ) => (
+        onRender: (item: ICarouselItem ) =>  
+          (
           <>
-            <EditForm updateListAfterEdit={()=>this.updateListAfterEvent('Alterações salvas')} subText={()=>""} key={''} order={item.order} id={item.id} title={item.title} description={item.description} urlArquivo={item.image} urlDirecionamento={item.link} />
+            <EditForm items={this.state.items} updateListAfterEdit={()=>this.updateListAfterEvent('Alterações salvas')} subText={()=>""} key={''} order={item.order} id={item.id} title={item.title} description={item.description} urlArquivo={item.image} urlDirecionamento={item.link} />
           </>
         ),
       },
@@ -260,6 +259,8 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
 
   public render() {
     const { columns, isCompactMode, items, showSuccessMessage, subText } = this.state;
+    
+    
   
     return (
       <div className={classNames.container}>
