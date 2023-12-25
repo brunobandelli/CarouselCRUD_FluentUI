@@ -5,6 +5,12 @@ import { useBoolean } from '@fluentui/react-hooks';
 import { TextField } from '@fluentui/react/lib/TextField';
 import { Stack, IStackProps, IStackStyles } from '@fluentui/react/lib/Stack';
 import axios from 'axios';
+import { ICarouselItem } from './RegistrationList';
+
+interface RegistrationFormProps {
+  updateListAfterRegister: () => void;
+  items: ICarouselItem[];  
+}
 
 const buttonStyles = {
   root: {
@@ -39,7 +45,7 @@ const columnProps: Partial<IStackProps> = {
   styles: { root: { width: '100%' } },
 };
 
-export const RegistrationForm: React.FunctionComponent<{ updateListAfterRegister: () => void }> = ({ updateListAfterRegister }) => {
+export const RegistrationForm: React.FunctionComponent<RegistrationFormProps> = ({ updateListAfterRegister, items }) => {
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [formErrors, setFormErrors] = React.useState<{ [key: string]: string | undefined }>({});
@@ -51,6 +57,7 @@ export const RegistrationForm: React.FunctionComponent<{ updateListAfterRegister
     const urlArquivo = document.getElementById('urlArquivo') as HTMLInputElement;
     const urlDirecionamento = document.getElementById('urlDirecionamento') as HTMLInputElement;
     const ordem = document.getElementById('ordem') as HTMLInputElement;
+  
 
     // Verifique se todos os campos obrigatórios estão preenchidos
     const errors: { [key: string]: string | undefined } = {};
@@ -73,6 +80,7 @@ export const RegistrationForm: React.FunctionComponent<{ updateListAfterRegister
       return;
     }
 
+  
     // Inicie o processo de envio do formulário
     setIsSubmitting(true);
 
@@ -101,6 +109,8 @@ export const RegistrationForm: React.FunctionComponent<{ updateListAfterRegister
     }
   };
 
+
+
   const onRenderFooterContent = React.useCallback(
     () => (
       <div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>
@@ -111,9 +121,20 @@ export const RegistrationForm: React.FunctionComponent<{ updateListAfterRegister
     [dismissPanel, handleCadastroImagem, isSubmitting],
   );
 
+
+  //Limita a quantidade de itens que podem ser adicionados na lista para 20.
+  const currentItemCount = items.length;
+  const maxItemCount = 20;
+  if ( isOpen== true && currentItemCount >= maxItemCount) {
+    // Exiba um aviso para o usuário e não prossiga com o cadastro
+    window.alert(`Você atingiu o limite máximo de ${maxItemCount} itens. Não é possível adicionar mais itens.`);
+    dismissPanel()
+    return;
+  }
+
   return (
     <div>
-      <DefaultButton text="+ Nova Imagem" onClick={openPanel} styles={buttonStyles} />
+      <DefaultButton text="+ Nova Imagem"  onClick={openPanel} styles={buttonStyles} />
       <Panel
         isOpen={isOpen}
         onDismiss={dismissPanel}

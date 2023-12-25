@@ -39,7 +39,7 @@ interface IDetailsListDocumentsExampleState {
   subText: string
 }
 
-interface ICarouselItem {
+export interface ICarouselItem {
   order: number;
   key: string;
   id: number;
@@ -251,8 +251,9 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       .then(response => {
         // Ordena os itens com base no campo "order"
         const sortedItems = response.data.sort((a, b) => a.order - b.order);
-        this.setState({ items: sortedItems });
-        console.log(sortedItems)
+        const limitedItems = sortedItems.slice(0, 20); //Limitado a 20 itens
+        this.setState({ items: limitedItems });
+        console.log(limitedItems)
       })
       .catch(error => console.error('Error fetching carousel data:', error));
   }
@@ -264,7 +265,7 @@ export class RegistrationList extends React.Component<{}, IDetailsListDocumentsE
       <div className={classNames.container}>
         <div className={classNames.headerForm}>
           <div><span style={{ fontWeight: '700' }}>Cadastro de imagens</span></div>
-          <div><RegistrationForm  updateListAfterRegister={()=>this.updateListAfterEvent("Imagem cadastrada")}/></div>
+          <div><RegistrationForm items={items} updateListAfterRegister={()=>this.updateListAfterEvent("Imagem cadastrada")}/></div>
         </div>
   
         <div style={{maxWidth: '100%', overflowX: 'auto', padding: '20px', margin: '10px', background: 'white' }}>
