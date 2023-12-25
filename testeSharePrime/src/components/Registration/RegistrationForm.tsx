@@ -9,7 +9,7 @@ import { ICarouselItem } from './RegistrationList';
 
 interface RegistrationFormProps {
   updateListAfterRegister: () => void;
-  items: ICarouselItem[];  
+  items: ICarouselItem[];
 }
 
 const buttonStyles = {
@@ -32,7 +32,7 @@ const primaryButtonStyle = {
     color: 'white',
     selectors: {
       ':hover': {
-        background: '#ffc700!important',  // Altere para a cor desejada no hover
+        background: '#ffc700!important',
       },
     },
   },
@@ -68,11 +68,11 @@ export const RegistrationForm: React.FunctionComponent<RegistrationFormProps> = 
     // Verifique se o campo 'Ordem' contém apenas números.
     if (!/^\d+$/.test(ordem.value) || isNaN(Number(ordem.value))) {
       errors['ordem'] = 'Campo obrigatório';
-    // Verifica se o campo 'Ordem' é inferior a 1 ou superior a 20.
-    } else if(Number(ordem.value)< 1 || Number(ordem.value) > 20){
+      // Verifica se o campo 'Ordem' é inferior a 1 ou superior a 20.
+    } else if (Number(ordem.value) < 1 || Number(ordem.value) > 20) {
       errors['ordem'] = 'A ordem deve ser um número entre 1 e 20';
-    // Verifica se o campo 'Ordem' está preenchido com um numero ja existente
-    } else if(items.some(item => item.order == Number(ordem.value))){
+      // Verifica se o campo 'Ordem' está preenchido com um numero ja existente
+    } else if (items.some(item => item.order == Number(ordem.value))) {
       errors['ordem'] = 'Este número de ordem já está em uso';
     }
     else {
@@ -80,28 +80,19 @@ export const RegistrationForm: React.FunctionComponent<RegistrationFormProps> = 
       ordem.value = String(parseInt(ordem.value, 10));
     }
 
-  //     // Verifique se o campo 'Ordem' contém apenas números e está entre 1 e 20
-  // const ordemValue = parseInt(ordem.value, 10);
-  // if (isNaN(ordemValue) || ordemValue < 1 || ordemValue > 20) {
-  //   errors['ordem'] = 'A ordem deve ser um número entre 1 e 20';
-  // } else {
-  //   ordem.value = String(ordemValue);
-  // }
-
-
     setFormErrors(errors);
 
     if (Object.keys(errors).length > 0) {
       return;
     }
 
-  
+
     // Inicie o processo de envio do formulário
     setIsSubmitting(true);
 
     // Faça a solicitação de cadastro usando Axios
     try {
-      const response = await axios.post('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items', {
+      await axios.post('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items', {
         title: titulo.value,
         description: descricao.value,
         image: urlArquivo.value,
@@ -111,8 +102,6 @@ export const RegistrationForm: React.FunctionComponent<RegistrationFormProps> = 
 
       // Atualize a lista chamando a função do componente pai
       updateListAfterRegister();
-
-      console.log('Imagem cadastrada com sucesso:', response.data);
 
       // Feche o painel após o cadastro bem-sucedido
       dismissPanel();
@@ -140,7 +129,7 @@ export const RegistrationForm: React.FunctionComponent<RegistrationFormProps> = 
   //Limita a quantidade de itens que podem ser adicionados na lista para 20.
   const currentItemCount = items.length;
   const maxItemCount = 20;
-  if ( isOpen== true && currentItemCount >= maxItemCount) {
+  if (isOpen == true && currentItemCount >= maxItemCount) {
     // Exiba um aviso para o usuário e não prossiga com o cadastro
     window.alert(`Você atingiu o limite máximo de ${maxItemCount} itens. Não é possível adicionar mais itens.`);
     dismissPanel()
@@ -149,7 +138,7 @@ export const RegistrationForm: React.FunctionComponent<RegistrationFormProps> = 
 
   return (
     <div>
-      <DefaultButton text="+ Nova Imagem"  onClick={openPanel} styles={buttonStyles} />
+      <DefaultButton text="+ Nova Imagem" onClick={openPanel} styles={buttonStyles} />
       <Panel
         isOpen={isOpen}
         onDismiss={dismissPanel}
@@ -206,9 +195,8 @@ export const RegistrationForm: React.FunctionComponent<RegistrationFormProps> = 
                   // Verifica se 'ev.target' é do tipo HTMLInputElement antes de acessar 'value'
                   if (ev?.target instanceof HTMLInputElement) {
                     // Remova caracteres não numéricos
-                    // ev.target.value = newValue ? newValue.replace(/\D/g, '') : '';
                     const sanitizedValue = newValue ? newValue.replace(/\D/g, '') : '';
-                          // Limite o valor entre 1 e 20
+                    // Limite o valor entre 1 e 20
                     const clampedValue = sanitizedValue ? Math.min(Math.max(parseInt(sanitizedValue, 10), 1), 20) : "";
 
                     ev.target.value = String(clampedValue);

@@ -3,19 +3,17 @@ import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog';
 import { DefaultButton, IconButton, PrimaryButton } from '@fluentui/react/lib/Button';
 import { hiddenContentStyle, mergeStyles } from '@fluentui/react/lib/Styling';
 import { useId, useBoolean } from '@fluentui/react-hooks';
-// import { SuccessMessage } from './SucessMessage';
-
 import axios from 'axios';
 
 const buttonStyles = {
   root: {
-      background: '#ffb500',
-      color: 'white',
-      selectors: {
-          ':hover': {
-              background: '#ffc700!important',  // Altere para a cor desejada no hover
-          },
+    background: '#ffb500',
+    color: 'white',
+    selectors: {
+      ':hover': {
+        background: '#ffc700!important',
       },
+    },
   },
 };
 
@@ -35,7 +33,6 @@ interface ConfirmationDialogProps {
 
 export const ConfirmationDialog: React.FunctionComponent<ConfirmationDialogProps> = ({ idItem, updateListAfterDeletion }) => {
   const [hideDialog, { toggle: toggleHideDialog }] = useBoolean(true);
-  // const [showSuccessMessage, setShowSuccessMessage] = React.useState(false);
   const [itemIdToDelete, setItemIdToDelete] = React.useState<number | null>(null);
 
   const labelId: string = useId('dialogLabel');
@@ -51,38 +48,18 @@ export const ConfirmationDialog: React.FunctionComponent<ConfirmationDialogProps
     [labelId, subTextId],
   );
 
-  // const onCloseDialog = () => {
-  //   toggleHideDialog();
-  //   if (itemIdToDelete !== null) {
-  //     axios
-  //       .delete(`https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items/${itemIdToDelete}`)
-  //       .then(response => {
-  //         console.log('Resposta da API:', response.data);
-  //         updateListAfterDeletion(itemIdToDelete);
-  //           setShowSuccessMessage(true);
-  //       })
-  //       .catch(error => {
-  //         console.error('Erro na solicitação de exclusão:', error);
-  //         setShowSuccessMessage(true);
-  //       });
-  //   }
-  // };
-
   const onCloseDialog = async () => {
-  toggleHideDialog();
+    toggleHideDialog();
 
-  if (itemIdToDelete !== null) {
-    try {
-      const response = await axios.delete(`https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items/${itemIdToDelete}`);
-      console.log('Resposta da API:', response.data);
-      updateListAfterDeletion(itemIdToDelete);
-      // setShowSuccessMessage(true);
-    } catch (error) {
-      console.error('Erro na solicitação de exclusão:', error);
-      // setShowSuccessMessage(true);
+    if (itemIdToDelete !== null) {
+      try {
+        await axios.delete(`https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items/${itemIdToDelete}`);
+        updateListAfterDeletion(itemIdToDelete);
+      } catch (error) {
+        console.error('Erro na solicitação de exclusão:', error);
+      }
     }
-  }
-};
+  };
 
 
   const onDeleteClick = () => {
@@ -111,14 +88,9 @@ export const ConfirmationDialog: React.FunctionComponent<ConfirmationDialogProps
       <Dialog hidden={hideDialog} onDismiss={toggleHideDialog} dialogContentProps={dialogContentProps} modalProps={modalProps}>
         <DialogFooter>
           <DefaultButton onClick={toggleHideDialog} text="Cancelar" />
-          <PrimaryButton onClick={onCloseDialog} text="Excluir" styles={buttonStyles}/>
-          {/* <SuccessMessage onCloseDialog={onCloseDialog} buttonText={'Excluir'} subText={'Item excluido'} /> */}
+          <PrimaryButton onClick={onCloseDialog} text="Excluir" styles={buttonStyles} />
         </DialogFooter>
       </Dialog>
-
-      {/* {showSuccessMessage && <SuccessMessage onCloseDialog={() => setShowSuccessMessage(false)} subText={'Item excluido'} 
-      // buttonText={''}
-       />} */}
     </>
   );
 };

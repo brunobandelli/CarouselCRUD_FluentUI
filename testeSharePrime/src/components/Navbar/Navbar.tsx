@@ -56,7 +56,7 @@ const NavLink: React.FC<NavLinkProps> = ({ to, active, children }) => {
 
   const lineStyle: React.CSSProperties = {
     height: '2px',
-    width: '70%', // Adjust as needed
+    width: '70%', 
     backgroundColor: active ? '#FFA500' : 'transparent',
     transition: 'background-color 0.3s ease',
     position: 'absolute',

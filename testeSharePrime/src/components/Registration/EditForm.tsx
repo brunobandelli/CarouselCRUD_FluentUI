@@ -8,7 +8,6 @@ import axios from 'axios';
 import { ICarouselItem } from './RegistrationList';
 
 
-
 interface EditFormProps {
   order: number;
   key: string;
@@ -22,17 +21,13 @@ interface EditFormProps {
   items: ICarouselItem[]
 }
 
-
-
-
-
 const primaryButtonStyle = {
   root: {
     background: '#ffb500',
     color: 'white',
     selectors: {
       ':hover': {
-        background: '#ffc700!important',  // Altere para a cor desejada no hover
+        background: '#ffc700!important',
       },
     },
   },
@@ -61,7 +56,6 @@ export const EditForm: React.FunctionComponent<EditFormProps> = (_props) => {
     const urlDirecionamento = document.getElementById('urlDirecionamento') as HTMLInputElement;
     const ordem = document.getElementById('ordem') as HTMLInputElement;
 
-
     // Verifique se todos os campos obrigatórios estão preenchidos
     const errors: { [key: string]: string | undefined } = {};
     if (!titulo.value) errors['titulo'] = 'Campo obrigatório';
@@ -69,15 +63,15 @@ export const EditForm: React.FunctionComponent<EditFormProps> = (_props) => {
     if (!urlArquivo.value) errors['urlArquivo'] = 'Campo obrigatório';
     if (!urlDirecionamento.value) errors['urlDirecionamento'] = 'Campo obrigatório';
 
- // Verifique se o campo 'Ordem' contém apenas números.
+    // Verifique se o campo 'Ordem' contém apenas números.
     if (!/^\d+$/.test(ordem.value) || isNaN(Number(ordem.value))) {
       errors['ordem'] = 'Campo obrigatório';
-    // Verifica se o campo 'Ordem' é inferior a 1 ou superior a 20.
-    } else if(Number(ordem.value)< 1 || Number(ordem.value) > 20){
+      // Verifica se o campo 'Ordem' é inferior a 1 ou superior a 20.
+    } else if (Number(ordem.value) < 1 || Number(ordem.value) > 20) {
       errors['ordem'] = 'A ordem deve ser um número entre 1 e 20';
-    // Verifica se o campo 'Ordem' está preenchido com um numero ja existente
+      // Verifica se o campo 'Ordem' está preenchido com um numero ja existente
     }
-    else if(_props.items.some(item => item.order == Number(ordem.value) &&  item.order !== _props.order)){
+    else if (_props.items.some(item => item.order == Number(ordem.value) && item.order !== _props.order)) {
       errors['ordem'] = 'Este número de ordem já está em uso';
     }
     else {
@@ -96,7 +90,7 @@ export const EditForm: React.FunctionComponent<EditFormProps> = (_props) => {
 
     // Faça a solicitação de cadastro usando Axios
     try {
-      const response = await axios.put(`https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items/${_props.id}`, {
+      await axios.put(`https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items/${_props.id}`, {
         title: titulo.value,
         description: descricao.value,
         image: urlArquivo.value,
@@ -104,20 +98,16 @@ export const EditForm: React.FunctionComponent<EditFormProps> = (_props) => {
         order: ordem.value,
       });
 
-      // Chame a função do componente pai para atualizar a lista
-      // _props.onCadastroSucesso();
 
       // Chame o novo método para garantir que a lista seja atualizada em ordem crescente
       _props.updateListAfterEdit();
 
-      console.log('Imagem cadastrada com sucesso:', response.data);
 
       // Feche o painel após o cadastro bem-sucedido
       dismissPanel();
     } catch (error) {
       console.error('Erro ao cadastrar imagem:', error);
     } finally {
-      // Finalize o processo de envio do formulário, independentemente do resultado
       setIsSubmitting(false);
     }
   };
@@ -134,13 +124,12 @@ export const EditForm: React.FunctionComponent<EditFormProps> = (_props) => {
 
   return (
     <div>
-        <IconButton
-            iconProps={{ iconName: 'Edit' }}
-            title="Edit"
-            ariaLabel="Edit"
-            onClick={openPanel}
-            style={{ color: '#ffb500' }} />
-      {/* <DefaultButton text="Open panel" onClick={openPanel} /> */}
+      <IconButton
+        iconProps={{ iconName: 'Edit' }}
+        title="Edit"
+        ariaLabel="Edit"
+        onClick={openPanel}
+        style={{ color: '#ffb500' }} />
       <Panel
         isOpen={isOpen}
         onDismiss={dismissPanel}
@@ -201,20 +190,19 @@ export const EditForm: React.FunctionComponent<EditFormProps> = (_props) => {
                   // Verifica se 'ev.target' é do tipo HTMLInputElement antes de acessar 'value'
                   if (ev?.target instanceof HTMLInputElement) {
                     // Remova caracteres não numéricos
-                    // ev.target.value = newValue ? newValue.replace(/\D/g, '') : '';
                     const sanitizedValue = newValue ? newValue.replace(/\D/g, '') : '';
-                          // Limite o valor entre 1 e 20
+                    // Limite o valor entre 1 e 20
                     const clampedValue = sanitizedValue ? Math.min(Math.max(parseInt(sanitizedValue, 10), 1), 20) : "";
 
                     ev.target.value = String(clampedValue);
 
-                  //  Verifique se o número já está em uso
-                  if(Number(clampedValue) == _props.order){
-                    setFormErrors({ ...formErrors, ordem: 'Valor atual' })
-                  }
-                  else if (_props.items.some(item => item.order == Number(clampedValue ))) {
-                    setFormErrors({ ...formErrors, ordem: 'Este número de ordem já está em uso' })
-                  }
+                    //  Verifique se o número já está em uso
+                    if (Number(clampedValue) == _props.order) {
+                      setFormErrors({ ...formErrors, ordem: 'Valor atual' })
+                    }
+                    else if (_props.items.some(item => item.order == Number(clampedValue))) {
+                      setFormErrors({ ...formErrors, ordem: 'Este número de ordem já está em uso' })
+                    }
                   }
                 }}
               />

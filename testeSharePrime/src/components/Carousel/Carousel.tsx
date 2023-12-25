@@ -1,4 +1,3 @@
-// src/components/Carousel.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CarouselItem } from './CarouselItem';
@@ -16,8 +15,7 @@ interface CarouselDataItem {
   image: string;
   link: string;
   key: string;
-  order: number; // Adicione a propriedade order ao tipo
-  // Adicione outras propriedades conforme necessário
+  order: number; 
 }
 
 const Carousel: React.FC = () => {
@@ -25,11 +23,10 @@ const Carousel: React.FC = () => {
   const [carouselData, setCarouselData] = useState<CarouselDataItem[]>([]);
 
   useEffect(() => {
-    // Fetch data from the API when the component mounts
     axios.get<CarouselDataItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
       .then(response => setCarouselData(response.data))
       .catch(error => console.error('Error fetching carousel data:', error));
-  }, []); // Empty dependency array ensures this effect runs once on mount
+  }, []); 
 
   const nextSlide = () => {
     setCurrentSlide((prevSlide) => (prevSlide + 1) % carouselData.length);
@@ -65,15 +62,15 @@ const Carousel: React.FC = () => {
           onClick={prevSlide}
         />
         <div style={{ maxWidth: '1000px', maxHeight: '450px', overflow: 'hidden' }}>
-        {sortedCarouselData.map((item, index) => (
-  <CarouselItem
-            title={item.title || ''}
-            description={item.description || ''}
-            image={item.image || ''}
-            link={item.link || ''}
-            key={item.key} // Use a chave única do objeto CarouselDataItem
-            isActive={index === currentSlide} order={item.order}  />
-))}
+          {sortedCarouselData.map((item, index) => (
+            <CarouselItem
+              title={item.title || ''}
+              description={item.description || ''}
+              image={item.image || ''}
+              link={item.link || ''}
+              key={item.key} 
+              isActive={index === currentSlide} order={item.order} />
+          ))}
 
         </div>
         <IconButton

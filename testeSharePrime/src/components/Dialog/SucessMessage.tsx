@@ -2,15 +2,12 @@ import * as React from 'react';
 import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog';
 import { DefaultButton } from '@fluentui/react/lib/Button';
 import { FontIcon } from '@fluentui/react/lib/Icon';
-// import { useId } from '@fluentui/react-hooks';
 import { mergeStyleSets } from '@fluentui/react';
 
 const dialogStyles = { main: { maxWidth: 450 } };
 
 const iconClass = mergeStyleSets({
   fontSize: '40px',
-  // height: '7px',
-  // width: '7px',
   position: 'absolute',
   bottom: "30px",
   left: "200px",
@@ -39,17 +36,12 @@ interface SuccessMessageProps {
 
 export const SuccessMessage: React.FunctionComponent<SuccessMessageProps> = ({ onCloseDialog, subText }) => {
   const [showModal, setShowModal] = React.useState(true);
-  // const labelId: string = useId('dialogLabel');
-  // const subTextId: string = useId('subTextLabel');
 
   const modalProps = React.useMemo(
     () => ({
-      // titleAriaId: labelId,
-      // subtitleAriaId: subTextId,
       isBlocking: false,
       styles: dialogStyles,
-    }),[]
-    // [labelId, subTextId],
+    }), []
   );
 
   const dialogContentProps = {

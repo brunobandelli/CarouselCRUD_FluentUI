@@ -25,10 +25,6 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
     <div
       style={{
         display: isActive ? 'flex' : 'none',
-        // maxWidth: '1000px',
-        // minWidth: '1000px',
-        // maxHeight: '400px',
-        // minHeight: '400px',
         width: '1000PX',
         height: '400px',
         alignItems: 'center',
@@ -43,11 +39,10 @@ export const CarouselItem: React.FC<CarouselItemProps> = ({
         <p style={{ fontSize: '12px', color: 'gray' }}>{description}</p>
       </div>
       <div style={{ flex: '60%', overflow: 'hidden' }}>
-        {/* Adicione uma chave única ao componente img */}
         <img
           src={image}
           alt={title}
-          key={`${order}-${isActive}`}  
+          key={`${order}-${isActive}`}
           style={{ display: 'block', width: '100%', height: '400px', objectFit: 'cover' }}
         />
       </div>

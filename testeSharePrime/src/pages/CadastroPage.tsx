@@ -1,4 +1,3 @@
-// src/pages/CadastroPage.tsx
 import React from 'react';
 import { RegistrationList } from '../components/Registration/RegistrationList';
 

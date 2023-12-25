@@ -10,4 +10,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 )
 
 
-//ANTES DA LIMPEZA DO CODIGO
+//CÓDIGO LIMPO
