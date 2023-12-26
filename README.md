@@ -1,6 +1,6 @@
 # Carrossel com Painel de Edição
 
-O projeto tem como intuito atender o protótipo proposto no figma e o escopo conforme documento em pdf na pasta raiz localizado.
+O projeto tem como intuito atender o protótipo proposto no figma e o escopo conforme documento em pdf na pasta raiz localizado: https://github.com/brunobandelli/testeSharePrime/blob/main/Escopo%20do%20Teste.pdf
 
 ## Visão Geral
 
