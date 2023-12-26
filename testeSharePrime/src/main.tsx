@@ -9,3 +9,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   </React.StrictMode>,
 )
 
+// COMEÇANDO A SEPARAR A LOGICA DA PARTE DE EXIBIÇÃO ATRAVÉS DE CUSTOM HOOKS
