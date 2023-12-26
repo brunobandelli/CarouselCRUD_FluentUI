@@ -1,4 +1,3 @@
-// useCarouselData.js
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -25,7 +24,7 @@ export const useCarouselData = () => {
     axios.get<CarouselDataItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
       .then(response => setCarouselData(response.data))
       .catch(error => console.error('Error fetching carousel data:', error));
-  }, []); 
+  }, []);
 
   const updateListAfterEvent = async () => {
     setLoading(true);
@@ -33,7 +32,7 @@ export const useCarouselData = () => {
       const response = await axios.get<CarouselDataItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items');
       setCarouselData(response.data);
     } catch (error) {
-      setError(error as Error); // Defina o tipo do estado error explicitamente
+      setError(error as Error);
     } finally {
       setLoading(false);
     }
