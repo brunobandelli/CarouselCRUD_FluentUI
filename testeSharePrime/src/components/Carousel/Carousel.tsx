@@ -1,32 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { CarouselItem } from './CarouselItem';
+import React, { useState } from 'react';
 import { IconButton } from '@fluentui/react/lib/Button';
-import { initializeIcons } from '@fluentui/react/lib/Icons';
 import { Stack } from '@fluentui/react/lib/Stack';
+import { useCarouselData } from '../../hooks/useCarouselData'; // Importando o hook customizado
 import next from '../../assets/next.png';
 import previous from '../../assets/previous.png';
-
-initializeIcons();
-
-interface CarouselDataItem {
-  title: string;
-  description: string;
-  image: string;
-  link: string;
-  key: string;
-  order: number; 
-}
+import { CarouselItem } from './CarouselItem';
 
 const Carousel: React.FC = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [carouselData, setCarouselData] = useState<CarouselDataItem[]>([]);
+  const { carouselData } = useCarouselData(); // Utilizando o hook
 
-  useEffect(() => {
-    axios.get<CarouselDataItem[]>('https://6584f29b022766bcb8c7b0b2.mockapi.io/api/carouselData/items')
-      .then(response => setCarouselData(response.data))
-      .catch(error => console.error('Error fetching carousel data:', error));
-  }, []); 
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const nextSlide = () => {
     setCurrentSlide((prevSlide) => (prevSlide + 1) % carouselData.length);
@@ -110,8 +93,6 @@ const Carousel: React.FC = () => {
       </div>
     </div>
   );
-
-
 };
 
 export default Carousel;
