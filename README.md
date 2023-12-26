@@ -2,6 +2,9 @@
 
 O projeto tem como intuito atender o protótipo proposto no figma e o escopo conforme documento em pdf na pasta raiz localizado: https://github.com/brunobandelli/testeSharePrime/blob/main/Escopo%20do%20Teste.pdf
 
+# Link do projeto no Vercel
+https://carroselsp.vercel.app/
+
 ## Visão Geral
 
 Este projeto consiste em um carrossel com funcionalidades CRUD para gerenciar imagens exibidas no carrossel. Desenvolvido utilizando Vite, React, TypeScript, Axios para requisições de API, Fluent UI para a interface do usuário e MockAPI para simular uma API durante o desenvolvimento.
@@ -22,6 +25,7 @@ Este projeto consiste em um carrossel com funcionalidades CRUD para gerenciar im
 - **Axios**: Biblioteca para fazer requisições HTTP.
 - **Fluent UI**: Conjunto de ferramentas para criar interfaces de usuário consistentes e intuitivas.
 - **MockAPI**: Ferramenta para simular uma API durante o desenvolvimento.
+- **Vercel**: Site para fazer deploy e hospedar projeto, deixando disponivel para o publico.
 
 ## Pré-requisitos
 
